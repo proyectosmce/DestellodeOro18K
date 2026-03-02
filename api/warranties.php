@@ -177,7 +177,8 @@ if ($method === 'GET') {
 
         if ($productType === 'different' && !$productRefForCheck) {
             http_response_code(400);
-            echo json_encode(['error' => 'Debe seleccionar el producto de reemplazo para la garantía.']);
+            $msg = 'Debe seleccionar el producto de reemplazo para la garantía.';
+            echo json_encode(['error' => $msg, 'message' => $msg]);
             exit;
         }
 
@@ -188,13 +189,15 @@ if ($method === 'GET') {
 
             if (!$prod) {
                 http_response_code(400);
-                echo json_encode(['error' => 'Producto no encontrado: ' . $productRefForCheck]);
+                $msg = 'Producto no encontrado: ' . $productRefForCheck;
+                echo json_encode(['error' => $msg, 'message' => $msg]);
                 exit;
             }
 
             if ((int)$prod['quantity'] <= 0 || (int)$prod['quantity'] < $qtyForCheck) {
                 http_response_code(400);
-                echo json_encode(['error' => "Producto agotado para garantía. '{$prod['name']}' disponible: {$prod['quantity']}"]);
+                $msg = "Producto agotado o stock insuficiente. '{$prod['name']}' disponible: {$prod['quantity']}, requerido: {$qtyForCheck}";
+                echo json_encode(['error' => $msg, 'message' => $msg]);
                 exit;
             }
         }
