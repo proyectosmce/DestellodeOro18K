@@ -10,6 +10,7 @@ if (!isset($_SESSION['user_id'])) {
     echo json_encode(['error' => 'No autorizado']);
     exit;
 }
+$actorUser   = $_SESSION['username'] ?? 'admin';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -70,7 +71,7 @@ if ($method === 'GET') {
                 ':wp' => $data->wholesalePrice,
                 ':rp' => $data->retailPrice,
                 ':sup' => $data->supplier,
-                ':user' => $_SESSION['username']
+                ':user' => $actorUser
             ]);
 
             echo json_encode(['success' => true, 'message' => 'Producto creado correctamente']);
@@ -113,7 +114,7 @@ if ($method === 'GET') {
                     ':wp' => $data->wholesalePrice,
                     ':rp' => $data->retailPrice,
                     ':sup' => $data->supplier,
-                    ':user' => $_SESSION['username']
+                    ':user' => $actorUser
                 ]);
             }
         } else {

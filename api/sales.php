@@ -12,6 +12,8 @@ if (!isset($_SESSION['user_id'])) {
     echo json_encode(['error' => 'No autorizado']);
     exit;
 }
+$actorUser   = $_SESSION['username'] ?? 'admin';
+$actorUserId = $_SESSION['user_id'] ?? null;
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -203,8 +205,8 @@ if ($method === 'GET') {
             ':pay'      => $data->paymentMethod,
             ':del_type' => $data->deliveryType,
             ':sale_date'=> $saleDate,
-            ':uid'      => $_SESSION['user_id'],
-            ':uname'    => $_SESSION['username'],
+            ':uid'      => $actorUserId,
+            ':uname'    => $actorUser,
             ':status'   => $status
         ]);
 
@@ -292,7 +294,7 @@ if ($method === 'GET') {
         $deleteStmt = $conn->prepare("DELETE FROM sales WHERE id = :id");
         $deleteStmt->execute([':id' => $dbId]);
 
-        logAction($conn, $_SESSION['username'], 'DELETE', 'SALE', $dbId, $details);
+        logAction($conn, $actorUser, 'DELETE', 'SALE', $dbId, $details);
 
         $conn->commit();
         echo json_encode(['success' => true, 'message' => 'Venta eliminada y stock restablecido']);
@@ -402,7 +404,7 @@ if ($method === 'GET') {
             $details    = "Pago confirmado para venta #{$invoiceNumber}.";
         }
 
-        logAction($conn, $_SESSION['username'], $actionType, 'SALE', $dbId, $details);
+        logAction($conn, $actorUser, $actionType, 'SALE', $dbId, $details);
 
         echo json_encode(['success' => true, 'message' => 'Venta actualizada']);
     } catch (PDOException $e) {

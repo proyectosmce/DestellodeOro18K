@@ -11,6 +11,8 @@ if (!isset($_SESSION['user_id'])) {
     echo json_encode(['error' => 'No autorizado']);
     exit;
 }
+$actorUser   = $_SESSION['username'] ?? 'admin';
+$actorUserId = $_SESSION['user_id'] ?? null;
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -77,8 +79,8 @@ if ($method === 'GET') {
             ':desc' => $data->description,
             ':amt' => $data->amount,
             ':date' => $expenseDate,
-            ':uid' => $_SESSION['user_id'],
-            ':uname' => $_SESSION['username']
+            ':uid' => $actorUserId,
+            ':uname' => $actorUser
         ]);
 
         echo json_encode(['success' => true, 'message' => 'Gasto registrado']);

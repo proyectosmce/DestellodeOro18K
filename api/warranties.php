@@ -12,6 +12,8 @@ if (!isset($_SESSION['user_id'])) {
     echo json_encode(['error' => 'No autorizado']);
     exit;
 }
+$actorUser = $_SESSION['username'] ?? 'admin';
+$actorUserId = $_SESSION['user_id'] ?? null;
 
 // Helper function para formatear dinero en logs
 function formatMoney($value) {
@@ -281,8 +283,8 @@ if ($method === 'GET') {
             ':shipval' => $data->shippingValue ?? 0,
             ':total' => $totalCost,
             ':status' => $data->status ?? 'pending',
-            ':uid' => $_SESSION['user_id'],
-            ':uname' => $_SESSION['username'],
+            ':uid' => $actorUserId,
+            ':uname' => $actorUser,
             ':created_at' => $createdAt
         ]);
         
@@ -318,7 +320,7 @@ if ($method === 'GET') {
                     ':id' => $saleIdInt
                 ]);
                 
-                logAction($conn, $_SESSION['username'], 'WARRANTY_INCREMENT_UPDATED', 'SALE', $saleIdInt, "Incremento por garantía actualizado: +" . formatMoney($additionalValue) . ". Nuevo total: " . formatMoney($newTotal));
+                logAction($conn, $actorUser, 'WARRANTY_INCREMENT_UPDATED', 'SALE', $saleIdInt, "Incremento por garantía actualizado: +" . formatMoney($additionalValue) . ". Nuevo total: " . formatMoney($newTotal));
             }
         }
 
@@ -332,7 +334,7 @@ if ($method === 'GET') {
                 $stockStmt->execute([':ref' => $productRef, ':qty' => $qtyToDeduct]);
                 
                 if ($stockStmt->rowCount() > 0) {
-                    logAction($conn, $_SESSION['username'], 'WARRANTY_CREATED_COMPLETED', 'WARRANTY', $warrantyId, "Garantía creada como completada. Stock descontado ($qtyToDeduct unidades) para REF: $productRef");
+                    logAction($conn, $actorUser, 'WARRANTY_CREATED_COMPLETED', 'WARRANTY', $warrantyId, "Garantía creada como completada. Stock descontado ($qtyToDeduct unidades) para REF: $productRef");
                 }
             }
 
@@ -341,7 +343,7 @@ if ($method === 'GET') {
                 syncWarrantyWithSaleItems($conn, $saleIdInt, $data->originalProductId, $data->newProductRef, $data->quantity ?? 1, $data->newProductName ?? null);
             }
         } else {
-            logAction($conn, $_SESSION['username'], 'WARRANTY_CREATED', 'WARRANTY', $warrantyId, "Garantía registrada para Factura: " . ($data->originalSaleId ?? 'N/A'));
+            logAction($conn, $actorUser, 'WARRANTY_CREATED', 'WARRANTY', $warrantyId, "Garantía registrada para Factura: " . ($data->originalSaleId ?? 'N/A'));
         }
 
         // 4. Registrar Gasto de Envío si aplica
@@ -355,11 +357,11 @@ if ($method === 'GET') {
                 ':desc' => $expenseDesc,
                 ':amt' => $shippingValue,
                 ':date' => $createdAt,
-                ':uid' => $_SESSION['user_id'],
-                ':uname' => $_SESSION['username'],
+                ':uid' => $actorUserId,
+                ':uname' => $actorUser,
                 ':wid' => $warrantyId
             ]);
-            logAction($conn, $_SESSION['username'], 'WARRANTY_SHIPPING_EXPENSE', 'EXPENSE', $conn->lastInsertId(), "Gasto de envío registrado por garantía #{$warrantyId}: " . formatMoney($shippingValue));
+            logAction($conn, $actorUser, 'WARRANTY_SHIPPING_EXPENSE', 'EXPENSE', $conn->lastInsertId(), "Gasto de envío registrado por garantía #{$warrantyId}: " . formatMoney($shippingValue));
         }
 
         echo json_encode(['success' => true, 'message' => 'Garantía registrada', 'id' => $warrantyId]);
@@ -459,8 +461,8 @@ if ($method === 'GET') {
             ':total' => ($data->additionalValue ?? 0),
             ':status' => $newStatus,
             ':created_at' => $createdAt,
-            ':uby' => $_SESSION['username'],
-            ':id' => $data->id
+                ':uby' => $actorUser,
+                ':id' => $data->id
         ]);
 
         // 2. Actualizar warranty_increment en la venta original si cambió el additionalValue
@@ -498,7 +500,7 @@ if ($method === 'GET') {
                 ]);
                 
                 $changeText = $incrementDifference > 0 ? "+" . formatMoney($incrementDifference) : formatMoney($incrementDifference);
-                logAction($conn, $_SESSION['username'], 'WARRANTY_INCREMENT_UPDATED', 'SALE', $saleIdInt, "Incremento por garantía actualizado: {$changeText}. Nuevo total: " . formatMoney($newTotal));
+                logAction($conn, $actorUser, 'WARRANTY_INCREMENT_UPDATED', 'SALE', $saleIdInt, "Incremento por garantía actualizado: {$changeText}. Nuevo total: " . formatMoney($newTotal));
             }
         }
 
@@ -526,8 +528,8 @@ if ($method === 'GET') {
                     ':desc' => $expenseDesc,
                     ':amt' => $shippingValue,
                     ':date' => $createdAt,
-                    ':uid' => $_SESSION['user_id'],
-                    ':uname' => $_SESSION['username'],
+                    ':uid' => $actorUserId,
+                    ':uname' => $actorUser,
                     ':wid' => $data->id
                 ]);
             }
@@ -550,10 +552,10 @@ if ($method === 'GET') {
                     $stockStmt->execute([':qty' => $qtyToDeduct, ':ref' => $productRef]);
                     
                     // Registrar en LOG
-                    logAction($conn, $_SESSION['username'], 'WARRANTY_COMPLETED', 'WARRANTY', $data->id, "Garantía completada. Stock descontado ($qtyToDeduct unidades) para REF: $productRef");
+                    logAction($conn, $actorUser, 'WARRANTY_COMPLETED', 'WARRANTY', $data->id, "Garantía completada. Stock descontado ($qtyToDeduct unidades) para REF: $productRef");
                 } else {
                     // Si no hay stock, registrar advertencia
-                    logAction($conn, $_SESSION['username'], 'WARRANTY_WARNING', 'WARRANTY', $data->id, "Garantía completada PERO NO HABÍA STOCK SUFICIENTE ($qtyToDeduct requeridas) para REF: $productRef");
+                    logAction($conn, $actorUser, 'WARRANTY_WARNING', 'WARRANTY', $data->id, "Garantía completada PERO NO HABÍA STOCK SUFICIENTE ($qtyToDeduct requeridas) para REF: $productRef");
                 }
             }
 
@@ -624,7 +626,7 @@ if ($method === 'GET') {
                     ':id' => $saleIdInt
                 ]);
                 
-                logAction($conn, $_SESSION['username'], 'WARRANTY_INCREMENT_REMOVED', 'SALE', $saleIdInt, "Incremento por garantía eliminado: -" . formatMoney($additionalValue) . ". Nuevo total: " . formatMoney($newTotal));
+                logAction($conn, $actorUser, 'WARRANTY_INCREMENT_REMOVED', 'SALE', $saleIdInt, "Incremento por garantía eliminado: -" . formatMoney($additionalValue) . ". Nuevo total: " . formatMoney($newTotal));
             }
         }
 
