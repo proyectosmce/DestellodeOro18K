@@ -168,6 +168,37 @@ if ($method === 'GET') {
     // JS envía: originalSaleId, customerName, originalProductId, originalProductName, warrantyReason, notes, productType, newProductRef...
     
     try {
+        // Validar stock antes de registrar la garantía (aplica incluso si queda pendiente)
+        $productType = $data->productType ?? 'same';
+        $productRefForCheck = ($productType === 'different')
+            ? ($data->newProductRef ?? null)
+            : ($data->originalProductId ?? null);
+        $qtyForCheck = max(1, (int)($data->quantity ?? 1));
+
+        if ($productType === 'different' && !$productRefForCheck) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Debe seleccionar el producto de reemplazo para la garantía.']);
+            exit;
+        }
+
+        if ($productRefForCheck) {
+            $stockCheckStmt = $conn->prepare("SELECT quantity, name FROM products WHERE reference = :ref");
+            $stockCheckStmt->execute([':ref' => $productRefForCheck]);
+            $prod = $stockCheckStmt->fetch();
+
+            if (!$prod) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Producto no encontrado: ' . $productRefForCheck]);
+                exit;
+            }
+
+            if ((int)$prod['quantity'] <= 0 || (int)$prod['quantity'] < $qtyForCheck) {
+                http_response_code(400);
+                echo json_encode(['error' => "Producto agotado para garantía. '{$prod['name']}' disponible: {$prod['quantity']}"]);
+                exit;
+            }
+        }
+
         // Asegurar columnas (end_date y username)
         try {
              $conn->exec("ALTER TABLE warranties ADD COLUMN IF NOT EXISTS end_date DATE AFTER reason");
