@@ -2731,6 +2731,9 @@
                                 <select id="warrantySelectedProduct" class="form-control" style="padding: 4px 8px; font-size: 0.85rem; height: auto; width: auto;"></select>
                             </div>
                         </div>
+                        <div id="warrantyExistingAlert"
+                            style="display: none; margin: 0.35rem 0 0.75rem 0; padding: 0.75rem; border: 1px solid var(--warning); border-radius: var(--radius-sm); background: rgba(255, 193, 7, 0.12); color: var(--warning); font-size: 0.85rem;">
+                        </div>
                         <div id="productInfoDisplay"></div>
                     </div>
 
@@ -3257,6 +3260,8 @@
         let currentYear = new Date().getFullYear();
         let selectedRole = 'admin';
         let selectedSaleForWarranty = null;
+        let selectedSaleWarrantyList = [];
+        let warrantiesCacheForAlerts = null;
         let currentHistoryType = 'all';
         let shoppingCart = [];
         let currentSaleForView = null;
@@ -4094,6 +4099,7 @@
                 localStorage.setItem('destelloOroHistoryWarranties', JSON.stringify(warranties));
                 localStorage.setItem('destelloOroHistoryPendingSales', JSON.stringify(pendingSales));
                 localStorage.setItem('destelloOroProducts', JSON.stringify(products));
+                warrantiesCacheForAlerts = null; // refrescar cache de alertas con datos recién cargados
 
                 // Sincronizar el contador de facturas basado en el historial real
                 if (sales && sales.length > 0) {
@@ -6608,6 +6614,8 @@
                         loadWarrantiesTable();
                         loadHistoryCards(); // Actualiza ventas también
                          // Reset cache manually if needed or trust reload
+                        warrantiesCacheForAlerts = null; // Obligar a refrescar alertas de garantías
+                        selectedSaleWarrantyList = [];
                         
                         form.reset();
                         // Limpiar búsqueda
@@ -6633,9 +6641,144 @@
             });
         }
 
+        // --- Alertas de garantías previas al seleccionar una venta ---
+        function normalizeWarrantyRef(item) {
+            return (item?.originalProductId || item?.product_ref || item?.productId || item?.reference || item?.id || '')
+                .toString()
+                .trim()
+                .toUpperCase();
+        }
+
+        function dedupeWarranties(list) {
+            const seen = new Map();
+            list.filter(Boolean).forEach(w => {
+                const key = w.id || `${w.originalSaleId || w.sale_id || w.original_invoice_id}-${normalizeWarrantyRef(w)}-${w.createdAt || w.date || ''}`;
+                if (!seen.has(key)) seen.set(key, w);
+            });
+            return Array.from(seen.values());
+        }
+
+        async function ensureWarrantyCacheForAlerts() {
+            if (Array.isArray(warrantiesCacheForAlerts) && warrantiesCacheForAlerts.length) {
+                return warrantiesCacheForAlerts;
+            }
+
+            let merged = [];
+            let hasFullCache = false;
+
+            try {
+                const history = JSON.parse(localStorage.getItem('destelloOroHistoryWarranties') || '[]');
+                if (Array.isArray(history) && history.length) merged = merged.concat(history);
+            } catch (e) {
+                console.warn('No se pudo leer cache de garantías (historial)', e);
+            }
+
+            try {
+                const all = JSON.parse(localStorage.getItem('destelloOroAllWarranties') || '[]');
+                if (Array.isArray(all) && all.length) {
+                    merged = merged.concat(all);
+                    hasFullCache = true;
+                }
+            } catch (e) {
+                console.warn('No se pudo leer cache de garantías (completo)', e);
+            }
+
+            merged = dedupeWarranties(merged);
+
+            if (!hasFullCache) {
+                try {
+                    const resp = await fetch('api/warranties.php');
+                    const data = await resp.json();
+                    if (Array.isArray(data)) {
+                        merged = dedupeWarranties(merged.concat(data));
+                        localStorage.setItem('destelloOroAllWarranties', JSON.stringify(data));
+                    }
+                } catch (err) {
+                    console.error('No se pudo cargar garantías para alertas', err);
+                }
+            }
+
+            warrantiesCacheForAlerts = merged;
+            return warrantiesCacheForAlerts;
+        }
+
+        async function getWarrantiesForSale(sale) {
+            const warranties = await ensureWarrantyCacheForAlerts() || [];
+            const saleIds = [
+                sale?.id,
+                sale?.invoice_number,
+                sale?.invoiceNumber,
+                sale?.originalSaleId
+            ].filter(Boolean).map(v => v.toString());
+
+            return warranties.filter(w => {
+                const wSaleId = (w.originalSaleId || w.sale_id || w.original_invoice_id || w.saleId || '').toString();
+                return saleIds.includes(wSaleId);
+            });
+        }
+
+        function renderExistingWarrantyAlert(sale, saleWarranties, selectedProduct) {
+            const alertBox = document.getElementById('warrantyExistingAlert');
+            if (!alertBox) return;
+
+            if (!Array.isArray(saleWarranties) || saleWarranties.length === 0) {
+                alertBox.style.display = 'none';
+                alertBox.innerHTML = '';
+                return;
+            }
+
+            const grouped = {};
+            saleWarranties.forEach(w => {
+                const ref = normalizeWarrantyRef(w);
+                if (!ref) return;
+                if (!grouped[ref]) grouped[ref] = { name: w.originalProductName || w.product_name || w.productName || 'Producto', items: [] };
+                grouped[ref].items.push(w);
+            });
+
+            const listHtml = Object.entries(grouped).map(([ref, info]) => {
+                const sorted = info.items.slice().sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0));
+                const latest = sorted[0] || {};
+                const dateText = latest.createdAt || latest.date ? formatDateSimple(latest.createdAt || latest.date) : 'sin fecha';
+                const statusText = getWarrantyStatusText(latest.status);
+                return `<li><strong>${info.name}</strong> (${ref}) - ${info.items.length} garantía(s). Última: ${statusText} • ${dateText}</li>`;
+            }).join('');
+            const listToShow = listHtml || '<li>Se registraron garantías previas en esta venta.</li>';
+
+            const selectedRef = normalizeWarrantyRef(selectedProduct || {});
+            let selectedHtml = '';
+            if (selectedRef) {
+                const group = grouped[selectedRef];
+                if (group) {
+                    const sorted = group.items.slice().sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0));
+                    const latest = sorted[0] || {};
+                    const statusText = getWarrantyStatusText(latest.status);
+                    const dateText = latest.createdAt || latest.date ? formatDateSimple(latest.createdAt || latest.date) : 'sin fecha';
+                    selectedHtml = `<div style=\"margin-top: 6px;\"><strong>Producto seleccionado:</strong> ya tiene ${group.items.length} garantía(s). Última: ${statusText} (${dateText}).</div>`;
+                } else {
+                    selectedHtml = `<div style=\"margin-top: 6px;\"><strong>Producto seleccionado:</strong> sin garantías previas registradas.</div>`;
+                }
+            }
+
+            const introText = sale.products && sale.products.length > 1
+                ? 'Esta venta es mixta / con varios productos. Se encontraron garantías previas para:'
+                : 'Esta venta ya tiene garantías previas para este producto:';
+
+            alertBox.innerHTML = `
+                <div style="display: flex; gap: 8px; align-items: flex-start;">
+                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px;"></i>
+                    <div>
+                        <div><strong>Aviso:</strong> ${introText}</div>
+                        <ul style="margin: 6px 0 0 18px; padding-left: 0;">${listToShow}</ul>
+                        ${selectedHtml}
+                    </div>
+                </div>`;
+            alertBox.style.display = 'block';
+        }
+
         // CORREGIDO: Seleccionar venta para garantía - Ahora llena el campo ID de factura
-        function selectSaleForWarranty(sale) {
+        async function selectSaleForWarranty(sale) {
             selectedSaleForWarranty = sale;
+            selectedSaleWarrantyList = await getWarrantiesForSale(sale);
 
             // Ocultar búsqueda, mostrar formulario
             document.getElementById('warrantySearchCard').style.display = 'none';
@@ -6714,6 +6857,9 @@
                     qtyInput.max = pQty;
                     qtyInput.value = 1;
                 }
+
+                // Mostrar advertencia de garantías previas (por venta y producto seleccionado)
+                renderExistingWarrantyAlert(sale, selectedSaleWarrantyList, product);
             }
 
             // Resetear otros campos del formulario
