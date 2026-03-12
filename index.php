@@ -2134,9 +2134,6 @@
                 <button class="nav-btn admin-only" data-section="warranties" id="warrantiesNavBtn">
                     <i class="fas fa-shield-alt"></i> Garantías
                 </button>
-                <button class="nav-btn admin-only" data-section="pending-warranties" id="pendingWarrantiesNavBtn">
-                    <i class="fas fa-exclamation-triangle"></i> Pendientes Garantías
-                </button>
                 <button class="nav-btn admin-only" data-section="pending" id="pendingNavBtn">
                     <i class="fas fa-clock"></i> Pagos Pendientes
                 </button>
@@ -2932,20 +2929,13 @@
                 <div class="stats-grid" id="warrantyStats">
                     <!-- Se cargará dinámicamente -->
                 </div>
-            </section>
 
-            <!-- Garantías Pendientes -->
-            <section id="pending-warranties" class="section-container">
-                <div class="section-header">
-                    <div class="section-title">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h2>Pendientes de Garantía</h2>
-                    </div>
-                </div>
-
-                <div class="table-wrapper">
-                    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <h3><i class="fas fa-shield-alt"></i> Garantías en estado pendiente</h3>
+                <!-- Garantías Pendientes (sub-módulo dentro de Garantías) -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-exclamation-triangle"></i> Garantías Pendientes
+                        </h3>
                         <div style="display: flex; gap: 12px; align-items: center;">
                             <div style="font-weight: 700; color: var(--gold-dark);" id="pendingWarrantiesTotalLabel">Total: $0</div>
                             <button class="btn btn-sm btn-info" onclick="loadPendingWarrantiesTable()">
@@ -8646,8 +8636,6 @@
                                     break;
                                 case 'warranties':
                                     loadWarrantiesTable();
-                                    break;
-                                case 'pending-warranties':
                                     loadPendingWarrantiesTable();
                                     break;
                                 case 'pending':
