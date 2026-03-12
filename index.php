@@ -3831,9 +3831,12 @@
             }
 
             // Calcular precios
-            const unitPrice = saleType === 'retail'
-                ? parseMoney(product.retailPrice)
-                : parseMoney(product.wholesalePrice);
+            // Usar valor numérico directo; fallback a parseFloat/parseMoney si viene formateado
+            const rawRetail = product.retailPrice;
+            const rawWholesale = product.wholesalePrice;
+            const retailPrice = Number(rawRetail) || parseFloat(rawRetail) || parseMoney(rawRetail);
+            const wholesalePrice = Number(rawWholesale) || parseFloat(rawWholesale) || parseMoney(rawWholesale);
+            const unitPrice = saleType === 'retail' ? retailPrice : wholesalePrice;
             const subtotal = unitPrice * quantity;
             const discountAmount = subtotal * (discount / 100);
             const finalSubtotal = subtotal - discountAmount;
