@@ -2395,7 +2395,7 @@
                                     step="0.01"
                                     value="0"
                                     aria-describedby="discountHelp">
-                                <small id="discountHelp" class="form-text" style="font-size: 0.8rem;">0 a 100% (admite decimales)</small>
+                                <small id="discountHelp" class="form-text" style="font-size: 0.8rem;">Escribe un valor entre 0 y 100 o en decimal</small>
                             </div>
                         </div>
 
