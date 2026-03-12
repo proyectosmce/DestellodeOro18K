@@ -2134,6 +2134,9 @@
                 <button class="nav-btn admin-only" data-section="warranties" id="warrantiesNavBtn">
                     <i class="fas fa-shield-alt"></i> Garantías
                 </button>
+                <button class="nav-btn admin-only" data-section="pending-warranties" id="pendingWarrantiesNavBtn">
+                    <i class="fas fa-exclamation-triangle"></i> Pendientes Garantías
+                </button>
                 <button class="nav-btn admin-only" data-section="pending" id="pendingNavBtn">
                     <i class="fas fa-clock"></i> Pagos Pendientes
                 </button>
@@ -2382,8 +2385,17 @@
                             </div>
                             <div class="form-group">
                                 <label for="discount">Descuento (%)</label>
-                                <input type="number" id="discount" class="form-control numeric-decimal" min="0" max="100" value="0">
-                                <small class="form-text" style="font-size: 0.8rem;">Entre 0 y 100%</small>
+                                <input
+                                    type="number"
+                                    id="discount"
+                                    class="form-control numeric-decimal"
+                                    inputmode="decimal"
+                                    min="0"
+                                    max="100"
+                                    step="0.01"
+                                    value="0"
+                                    aria-describedby="discountHelp">
+                                <small id="discountHelp" class="form-text" style="font-size: 0.8rem;">0 a 100% (admite decimales)</small>
                             </div>
                         </div>
 
@@ -2922,6 +2934,45 @@
                 </div>
             </section>
 
+            <!-- Garantías Pendientes -->
+            <section id="pending-warranties" class="section-container">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h2>Pendientes de Garantía</h2>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3><i class="fas fa-shield-alt"></i> Garantías en estado pendiente</h3>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div style="font-weight: 700; color: var(--gold-dark);" id="pendingWarrantiesTotalLabel">Total: $0</div>
+                            <button class="btn btn-sm btn-info" onclick="loadPendingWarrantiesTable()">
+                                <i class="fas fa-sync-alt"></i> Refrescar
+                            </button>
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="pendingWarrantiesTable">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Nombre del Cliente</th>
+                                    <th>Ref/Factura de Venta</th>
+                                    <th>Valor</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingWarrantiesTableBody">
+                                <!-- Garantías pendientes se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             <!-- Pagos Pendientes -->
             <section id="pending" class="section-container">
                 <div class="section-header">
@@ -2977,6 +3028,7 @@
                             <option value="expenses">Gastos</option>
                             <option value="restocks">Surtidos</option>
                             <option value="warranties">Garantías</option>
+                            <option value="pending_warranties">Pendientes Garantías</option>
                             <option value="pending">Pendientes</option>
                             <option value="profit">Ganancias</option>
                             <option value="admin_audit">Movimientos Admin</option>
@@ -3296,6 +3348,7 @@
             'expenses': { icon: 'fa-file-invoice-dollar', color: 'expenses', title: 'Gastos' },
             'restocks': { icon: 'fa-truck-loading', color: 'restocks', title: 'Surtidos' },
             'warranties': { icon: 'fa-shield-alt', color: 'warranties', title: 'Garantías' },
+            'pending_warranties': { icon: 'fa-exclamation-triangle', color: 'warranties', title: 'Garantías Pendientes' },
             'pending': { icon: 'fa-clock', color: 'pending', title: 'Pendientes' },
             'profit': { icon: 'fa-coins', color: 'profit', title: 'Ganancias' }
         };
@@ -3778,7 +3831,9 @@
             }
 
             // Calcular precios
-            const unitPrice = saleType === 'retail' ? product.retailPrice : product.wholesalePrice;
+            const unitPrice = saleType === 'retail'
+                ? parseMoney(product.retailPrice)
+                : parseMoney(product.wholesalePrice);
             const subtotal = unitPrice * quantity;
             const discountAmount = subtotal * (discount / 100);
             const finalSubtotal = subtotal - discountAmount;
@@ -4099,6 +4154,10 @@
                 localStorage.setItem('destelloOroHistoryWarranties', JSON.stringify(warranties));
                 localStorage.setItem('destelloOroHistoryPendingSales', JSON.stringify(pendingSales));
                 localStorage.setItem('destelloOroProducts', JSON.stringify(products));
+                const pendingWarranties = warranties
+                    .filter(w => (w.status || 'pending') === 'pending')
+                    .map(w => ({ ...w, pendingValue: computePendingWarrantyValue(w, sales) }));
+                localStorage.setItem('destelloOroPendingWarranties', JSON.stringify(pendingWarranties));
                 warrantiesCacheForAlerts = null; // refrescar cache de alertas con datos recién cargados
 
                 // Sincronizar el contador de facturas basado en el historial real
@@ -4116,6 +4175,7 @@
                 let fRestocks = restocks;
                 let fWarranties = warranties;
                 let fPending = pendingSales;
+                let fPendingWarranties = pendingWarranties;
 
                 cardsContainer.innerHTML = '';
 
@@ -4126,18 +4186,20 @@
                     // Vista normal
                     if (currentHistoryType !== 'all') {
                         if (currentHistoryType === 'sales') {
-                            fExpenses = []; fRestocks = []; fWarranties = []; fPending = [];
+                            fExpenses = []; fRestocks = []; fWarranties = []; fPending = []; fPendingWarranties = [];
                         } else if (currentHistoryType === 'expenses') {
-                            fSales = []; fRestocks = []; fWarranties = []; fPending = [];
+                            fSales = []; fRestocks = []; fWarranties = []; fPending = []; fPendingWarranties = [];
                         } else if (currentHistoryType === 'restocks') {
-                            fSales = []; fExpenses = []; fWarranties = []; fPending = [];
+                            fSales = []; fExpenses = []; fWarranties = []; fPending = []; fPendingWarranties = [];
                         } else if (currentHistoryType === 'warranties') {
-                            fSales = []; fExpenses = []; fRestocks = []; fPending = [];
+                            fSales = []; fExpenses = []; fRestocks = []; fPending = []; fPendingWarranties = [];
+                        } else if (currentHistoryType === 'pending_warranties') {
+                            fSales = []; fExpenses = []; fRestocks = []; fWarranties = []; fPending = [];
                         } else if (currentHistoryType === 'pending') {
-                            fSales = []; fExpenses = []; fRestocks = []; fWarranties = [];
+                            fSales = []; fExpenses = []; fRestocks = []; fWarranties = []; fPendingWarranties = [];
                         } else if (currentHistoryType === 'profit') {
                              // Solo ganancias, ocultar resto? O mostrar profit card. Profit card se muestra abajo.
-                             fSales = []; fExpenses = []; fRestocks = []; fWarranties = []; fPending = [];
+                             fSales = []; fExpenses = []; fRestocks = []; fWarranties = []; fPending = []; fPendingWarranties = [];
                         }
                     }
 
@@ -4145,6 +4207,7 @@
                     if (fExpenses.length > 0) createHistoryCard('expenses', fExpenses);
                     if (fRestocks.length > 0) createHistoryCard('restocks', fRestocks);
                     if (fWarranties.length > 0) createHistoryCard('warranties', fWarranties);
+                    if (fPendingWarranties.length > 0) createHistoryCard('pending_warranties', fPendingWarranties);
                     if (fPending.length > 0) createHistoryCard('pending', fPending);
 
                     // Tarjeta de ganancias solo si estamos en 'all' o explícitamente 'profit' o 'sales'
@@ -4496,6 +4559,9 @@
                     totalValue += parseFloat(item.totalValue) || 0;
                 } else if (type === 'warranties') {
                     totalValue += (parseFloat(item.totalCost) || 0) + (parseFloat(item.shippingValue || item.shipping_value) || 0);
+                } else if (type === 'pending_warranties') {
+                    const cachedValue = item.pendingValue || computePendingWarrantyValue(item, JSON.parse(localStorage.getItem('destelloOroHistorySales') || '[]'));
+                    totalValue += cachedValue;
                 } else if (type === 'pending') {
                     totalValue += parseFloat(item.total) || 0;
                 }
@@ -4849,6 +4915,9 @@
                     case 'warranties':
                         data = JSON.parse(localStorage.getItem('destelloOroHistoryWarranties'));
                         break;
+                    case 'pending_warranties':
+                        data = JSON.parse(localStorage.getItem('destelloOroPendingWarranties')) || [];
+                        break;
                     case 'pending':
                         data = JSON.parse(localStorage.getItem('destelloOroHistoryPendingSales'));
                         break;
@@ -4865,6 +4934,9 @@
                         totalValue += parseFloat(item.totalValue) || 0;
                     } else if (type === 'warranties') {
                         totalValue += (parseFloat(item.totalCost) || 0) + (parseFloat(item.shippingValue || item.shipping_value) || 0);
+                    } else if (type === 'pending_warranties') {
+                        const pv = item.pendingValue || computePendingWarrantyValue(item, JSON.parse(localStorage.getItem('destelloOroHistorySales') || '[]'));
+                        totalValue += pv;
                     } else if (type === 'pending') {
                         totalValue += parseFloat(item.total) || 0;
                     }
@@ -4933,7 +5005,7 @@
                  if (currentTitle.includes('inversión')) type = 'investment'; // Nuevo
                  else if (currentTitle.includes('gasto')) type = 'expenses';
                 else if (currentTitle.includes('surtido')) type = 'restocks';
-                else if (currentTitle.includes('garantía')) type = 'warranties';
+                else if (currentTitle.includes('garantía')) type = currentTitle.includes('pendiente') ? 'pending_warranties' : 'warranties';
                 else if (currentTitle.includes('pendiente')) type = 'pending';
                 else type = 'sales';
             }
@@ -5007,6 +5079,11 @@
                         break;
                     case 'warranties':
                         data = JSON.parse(localStorage.getItem('destelloOroHistoryWarranties'));
+                        break;
+                    case 'pending_warranties':
+                        data = JSON.parse(localStorage.getItem('destelloOroPendingWarranties')) || [];
+                        const salesCache = JSON.parse(localStorage.getItem('destelloOroHistorySales')) || [];
+                        data = data.map(w => ({ ...w, pendingValue: computePendingWarrantyValue(w, salesCache) }));
                         break;
                     case 'pending':
                         data = JSON.parse(localStorage.getItem('destelloOroHistoryPendingSales'));
@@ -5089,6 +5166,19 @@
                                 <th>Motivo</th>
                                 <th>Incremento</th>
                                 <th>Envío</th>
+                                <th>Estado</th>
+                                <th>Usuario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        `;
+                        break;
+                    case 'pending_warranties':
+                        headers = `
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Ref/Factura Venta</th>
+                                <th>Valor</th>
                                 <th>Estado</th>
                                 <th>Usuario</th>
                                 <th>Acciones</th>
@@ -7956,7 +8046,10 @@
                 if (result.success) {
                     // 1. Actualizar tablas de secciones específicas
                     if (type === 'expenses') loadExpensesTable();
-                    if (type === 'warranties') loadWarrantiesTable();
+                    if (type === 'warranties') {
+                        loadWarrantiesTable();
+                        loadPendingWarrantiesTable();
+                    }
                     if (type === 'restocks' || type === 'sales') await loadInventoryTable();
                     
                     // 2. Actualizar caché de historial (crucial)
@@ -8551,6 +8644,9 @@
                                 case 'warranties':
                                     loadWarrantiesTable();
                                     break;
+                                case 'pending-warranties':
+                                    loadPendingWarrantiesTable();
+                                    break;
                                 case 'pending':
                                     loadPendingSalesTable();
                                     break;
@@ -8818,7 +8914,9 @@
                 const productRef = document.getElementById('saleProductRef').value.trim().toUpperCase();
                 const quantity = parseInt(document.getElementById('saleQuantity').value) || 0;
                 const saleType = document.getElementById('saleType').value;
-                const discount = parseFloat(document.getElementById('discount').value) || 0;
+                const discountInput = document.getElementById('discount');
+                const discount = parsePercentage(discountInput.value);
+                discountInput.value = discount.toLocaleString('es-CO', { useGrouping: false, maximumFractionDigits: 2 });
 
                 // Validar datos
                 if (!productRef || quantity <= 0) {
@@ -10149,6 +10247,10 @@
                 localStorage.setItem('destelloOroHistoryWarranties', JSON.stringify([]));
             }
 
+            if (!localStorage.getItem('destelloOroPendingWarranties')) {
+                localStorage.setItem('destelloOroPendingWarranties', JSON.stringify([]));
+            }
+
             if (!localStorage.getItem('destelloOroNextInvoiceId')) {
                 localStorage.setItem('destelloOroNextInvoiceId', '1001');
             }
@@ -10320,6 +10422,110 @@
                 });
             } catch (error) {
                 console.error('Error cargando gastos:', error);
+            }
+        }
+
+        // Calcular valor pendiente de garantía (total venta + adicional + incremento - envío)
+        function computePendingWarrantyValue(warranty, salesCache = []) {
+            const saleId = warranty.originalSaleId || warranty.original_invoice_id || warranty.original_invoiceId;
+            const sale = salesCache.find(s =>
+                s.id == saleId ||
+                s.invoice_number == saleId ||
+                s.invoiceNumber == saleId
+            );
+
+            const saleTotal = sale ? (parseFloat(sale.total) || 0) : 0;
+            const additional = parseFloat(warranty.additionalValue || warranty.additional_value || warranty.totalCost || 0) || 0;
+            const increment = sale ? (parseFloat(sale.warrantyIncrement || sale.warranty_increment) || 0) : 0;
+            const shipping = parseFloat(warranty.shippingValue || warranty.shipping_value) || 0;
+
+            const value = saleTotal + additional + increment - shipping;
+            return Math.max(0, value);
+        }
+
+        // Cargar tabla de garantías pendientes
+        async function loadPendingWarrantiesTable() {
+            try {
+                const response = await fetch('api/warranties.php');
+                const warranties = await response.json();
+
+                if (!Array.isArray(warranties)) {
+                    console.error('Error: La respuesta de garantías no es un array', warranties);
+                    return;
+                }
+
+                const pendingWarranties = warranties.filter(w => (w.status || 'pending') === 'pending');
+                // Cache ventas para cálculo de valor
+                const salesCache = [
+                    ...JSON.parse(localStorage.getItem('destelloOroAllSales') || '[]'),
+                    ...JSON.parse(localStorage.getItem('destelloOroHistorySales') || '[]'),
+                    ...JSON.parse(localStorage.getItem('destelloOroPendingSales') || '[]'),
+                    ...JSON.parse(localStorage.getItem('destelloOroHistoryPendingSales') || '[]')
+                ];
+
+                const enriched = pendingWarranties.map(w => ({
+                    ...w,
+                    pendingValue: computePendingWarrantyValue(w, salesCache)
+                }));
+
+                localStorage.setItem('destelloOroPendingWarranties', JSON.stringify(enriched));
+
+                const tableBody = document.getElementById('pendingWarrantiesTableBody');
+                const totalLabel = document.getElementById('pendingWarrantiesTotalLabel');
+                if (tableBody) tableBody.innerHTML = '';
+
+                if (!tableBody) return;
+
+                if (enriched.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: #666;">
+                                <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;"></i>
+                                <p style="font-size: 1.1rem; font-weight: 500;">No hay garantías pendientes</p>
+                                <p style="font-size: 0.9rem;">Todas las garantías están en proceso o completadas</p>
+                            </td>
+                        </tr>
+                    `;
+                    if (totalLabel) totalLabel.textContent = 'Total: $0';
+                    return;
+                }
+
+                let totalValue = 0;
+
+                enriched.forEach(warranty => {
+                    const row = document.createElement('tr');
+                    totalValue += warranty.pendingValue;
+
+                    row.innerHTML = `
+                        <td>${formatDate(warranty.createdAt || warranty.date)}</td>
+                        <td>${warranty.customerName || 'Cliente'}</td>
+                        <td><strong>${warranty.originalSaleId || warranty.original_invoice_id || 'N/A'}</strong></td>
+                        <td><strong>${formatCurrency(warranty.pendingValue)}</strong></td>
+                        <td><span class="badge badge-warning">${getWarrantyStatusText(warranty.status || 'pending')}</span></td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <button class="btn btn-info btn-sm" onclick="viewMovementDetails('${warranty.id}', 'warranties')" title="Ver">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-warning btn-sm" onclick="editMovement('${warranty.id}', 'warranties')" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-success btn-sm" onclick="completeWarranty('${warranty.id}')" title="Marcar como completada">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteMovement('${warranty.id}', 'warranties')" title="Eliminar">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+
+                if (totalLabel) totalLabel.textContent = `Total: ${formatCurrency(totalValue)}`;
+            } catch (error) {
+                console.error('Error cargando garantías pendientes:', error);
             }
         }
 
@@ -10589,6 +10795,8 @@
 
                     if (data.success) {
                         loadHistoryCards(); // Recarga todas las tarjetas, incluyendo garantías
+                        loadWarrantiesTable(); // Refrescar tabla principal de garantías
+                        loadPendingWarrantiesTable(); // Sacar de pendientes si aplica
                         if (document.getElementById('historyDetailsView').classList.contains('active')) {
                              showHistoryDetails('warranties'); // Recarga detalles si está abierto
                         }
@@ -10670,6 +10878,16 @@
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0
             }).format(amount);
+        }
+
+        // Parsea porcentajes con coma o punto y los limita a 0-100 con 2 decimales
+        function parsePercentage(value) {
+            if (value === null || value === undefined) return 0;
+            const normalized = String(value).replace(',', '.');
+            const num = parseFloat(normalized);
+            if (isNaN(num)) return 0;
+            const bounded = Math.min(100, Math.max(0, num));
+            return Math.round(bounded * 100) / 100;
         }
 
         // Convierte strings con puntos de miles/comas a número entero
