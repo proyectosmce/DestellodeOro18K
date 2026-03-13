@@ -1193,10 +1193,14 @@
         }
 
         .enhanced-invoice .info-card {
-            background: #f9f9f9;
-            border: 1px solid #ededed;
-            border-radius: 8px;
-            padding: 12px;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 4px 0;
+        }
+
+        .enhanced-invoice .info-card + .info-card {
+            padding-top: 0;
         }
 
         .enhanced-invoice .info-row {
@@ -1204,16 +1208,17 @@
             justify-content: space-between;
             gap: 0.6rem;
             font-size: 0.92rem;
-            padding: 2px 0;
+            padding: 4px 0;
+            border: none;
         }
 
         .enhanced-invoice .info-label {
-            color: #555;
-            font-weight: 500;
+            color: #333;
+            font-weight: 600;
         }
 
         .enhanced-invoice .info-value {
-            color: #111;
+            color: #000;
             font-weight: 600;
             text-align: right;
         }
@@ -1225,25 +1230,34 @@
 
         .enhanced-invoice .product-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0 6px;
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
             position: relative;
         }
 
         .enhanced-invoice .product-table thead th {
-            background: #f0f0f0;
+            background: #f5f5f5;
             color: #111;
             padding: 9px 10px;
             text-align: left;
             font-weight: 700;
             font-size: 0.9rem;
-            border-bottom: 1px solid #dcdcdc;
+            border: none;
+        }
+
+        .enhanced-invoice .product-table tbody tr:nth-child(odd) {
+            background: #fdf7eb;
+        }
+
+        .enhanced-invoice .product-table tbody tr:nth-child(even) {
+            background: #ffffff;
         }
 
         .enhanced-invoice .product-table td {
             padding: 10px;
-            border-bottom: 1px solid #ededed;
+            border: none;
             font-size: 0.88rem;
         }
 
@@ -9659,17 +9673,28 @@
             pdf.text('Precio unitario', 155, tableStartY);
             pdf.text('Total', 185, tableStartY);
 
+            const rowColors = [
+                { r: 253, g: 247, b: 235 },
+                { r: 255, g: 255, b: 255 }
+            ];
+
             let yPos = tableStartY + 8;
             pdf.setFont("helvetica", "normal");
 
-            (sale.products || []).forEach(item => {
+            (sale.products || []).forEach((item, index) => {
+                const rowHeight = 7;
+                const fill = rowColors[index % 2];
+                pdf.setFillColor(fill.r, fill.g, fill.b);
+                pdf.rect(12, yPos - 5, pageWidth - 24, rowHeight, 'F');
+
                 const name = item.productName?.length > 60 ? item.productName.substring(0, 57) + '...' : item.productName;
+                pdf.setTextColor(0, 0, 0);
                 pdf.text(name || '', 15, yPos);
                 pdf.text(item.productId ? String(item.productId) : '', 105, yPos);
                 pdf.text(String(item.quantity || 0), 135, yPos);
                 pdf.text(formatCurrency(item.unitPrice || 0), 155, yPos);
                 pdf.text(formatCurrency(item.subtotal || 0), 185, yPos);
-                yPos += 7;
+                yPos += rowHeight;
             });
 
             // Resumen
