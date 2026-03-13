@@ -1063,7 +1063,7 @@
                 font-size: 1rem;
             }
             .enhanced-invoice .invoice-logo-img {
-                max-width: 170px;
+                max-width: 190px;
             }
             .enhanced-invoice .invoice-qr img {
                 max-width: 130px;
@@ -1256,7 +1256,7 @@
         }
 
         .enhanced-invoice .invoice-logo-img {
-            max-width: 220px;
+            max-width: 260px;
             height: auto;
         }
 
@@ -9838,7 +9838,7 @@
             }
 
             let y = 12;
-            if (logoData) pdf.addImage(logoData, 'JPEG', 13, y, 36, 26);
+            if (logoData) pdf.addImage(logoData, 'JPEG', 12, y, 42, 30);
             if (qrData) pdf.addImage(qrData, 'JPEG', pageWidth - 52, y, 36, 36);
 
             pdf.setFontSize(14);
