@@ -9504,8 +9504,8 @@
             });
         }
 
-        // Cargar imagen y teñirla con un color específico (útil para QR)
-        async function getTintedImage(url, color = '#E4405F') {
+        // Cargar imagen y teñirla con gradiente (útil para QR)
+        async function getTintedImage(url, gradient = ['#F58529', '#DD2A7B']) {
             return new Promise((resolve) => {
                 const img = new Image();
                 img.crossOrigin = 'Anonymous';
@@ -9517,32 +9517,43 @@
                     ctx.drawImage(img, 0, 0);
                     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                     const data = imageData.data;
-                    // Instagram gradient (left->right)
-                    const gradientColors = ['#F58529', '#DD2A7B']; // naranja -> magenta
+
+                    const colors = Array.isArray(gradient) && gradient.length ? gradient : ['#E4405F'];
                     const toRgb = (hex) => ({
                         r: parseInt(hex.substr(1, 2), 16),
                         g: parseInt(hex.substr(3, 2), 16),
                         b: parseInt(hex.substr(5, 2), 16)
                     });
-                    const c1 = toRgb(gradientColors[0]);
-                    const c2 = toRgb(gradientColors[1]);
+                    const colorStops = colors.map(toRgb);
                     const lerp = (a, b, t) => Math.round(a + (b - a) * t);
+                    const sampleGradient = (t) => {
+                        if (colorStops.length === 1) return colorStops[0];
+                        const seg = 1 / (colorStops.length - 1);
+                        const idx = Math.min(colorStops.length - 2, Math.floor(t / seg));
+                        const localT = (t - idx * seg) / seg;
+                        const cA = colorStops[idx];
+                        const cB = colorStops[idx + 1];
+                        return {
+                            r: lerp(cA.r, cB.r, localT),
+                            g: lerp(cA.g, cB.g, localT),
+                            b: lerp(cA.b, cB.b, localT),
+                        };
+                    };
 
                     for (let i = 0; i < data.length; i += 4) {
                         const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
                         if (a === 0) continue;
-                        // Luminance to keep only dark modules
                         const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-                        if (lum < 200) { // dark => tint
+                        if (lum < 200) { // dark modules => tint
                             const pixelIndex = i / 4;
                             const x = pixelIndex % canvas.width;
                             const t = canvas.width > 1 ? x / (canvas.width - 1) : 0;
-                            data[i] = lerp(c1.r, c2.r, t);
-                            data[i + 1] = lerp(c1.g, c2.g, t);
-                            data[i + 2] = lerp(c1.b, c2.b, t);
+                            const c = sampleGradient(t);
+                            data[i] = c.r;
+                            data[i + 1] = c.g;
+                            data[i + 2] = c.b;
                             data[i + 3] = a;
                         } else {
-                            // make white
                             data[i] = 255;
                             data[i + 1] = 255;
                             data[i + 2] = 255;
@@ -9562,7 +9573,7 @@
             try {
                 const qrImg = document.querySelector('#invoiceModal .invoice-qr img');
                 if (!qrImg) return;
-                const tinted = await getTintedImage('qrinstagram.jpeg', '#E4405F');
+                const tinted = await getTintedImage('qrinstagram.jpeg');
                 if (tinted) qrImg.src = tinted;
             } catch (e) {
                 console.warn('No se pudo teñir el QR en pantalla', e);
@@ -9576,7 +9587,7 @@
             const pageWidth = pdf.internal.pageSize.getWidth();
 
             const logoData = await getBase64Image('imagenoriginal.jpeg');
-            const qrData = await getTintedImage('qrinstagram.jpeg', '#E4405F') || await getBase64Image('qrinstagram.jpeg');
+            const qrData = await getTintedImage('qrinstagram.jpeg') || await getBase64Image('qrinstagram.jpeg');
 
             let y = 12;
             if (logoData) pdf.addImage(logoData, 'JPEG', 15, y, 30, 22);
