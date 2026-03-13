@@ -2806,11 +2806,16 @@
 
                 <!-- Tabla de gastos -->
                 <div class="table-wrapper">
-                    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <h3><i class="fas fa-history"></i> Historial de Gastos</h3>
-                        <button class="btn btn-sm btn-info" onclick="loadExpensesTable()">
-                            <i class="fas fa-sync-alt"></i> Refrescar
-                        </button>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <div class="search-box">
+                                <input type="text" id="expensesSearch" class="form-control" placeholder="Buscar por descripción, usuario o valor..." style="min-width: 240px;" oninput="loadExpensesTable()">
+                            </div>
+                            <button class="btn btn-sm btn-info" onclick="loadExpensesTable()">
+                                <i class="fas fa-sync-alt"></i> Refrescar
+                            </button>
+                        </div>
                     </div>
                     <div style="overflow-x: auto;">
                         <table class="data-table" id="expensesTable">
@@ -3074,11 +3079,16 @@
 
                 <!-- Tabla de garantías -->
                 <div class="table-wrapper">
-                    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <h3><i class="fas fa-list"></i> Garantías Registradas</h3>
-                        <button class="btn btn-sm btn-info" onclick="loadWarrantiesTable()">
-                            <i class="fas fa-sync-alt"></i> Refrescar
-                        </button>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <div class="search-box">
+                                <input type="text" id="warrantiesSearch" class="form-control" placeholder="Buscar por cliente, ID o estado..." style="min-width: 240px;" oninput="loadWarrantiesTable()">
+                            </div>
+                            <button class="btn btn-sm btn-info" onclick="loadWarrantiesTable()">
+                                <i class="fas fa-sync-alt"></i> Refrescar
+                            </button>
+                        </div>
                     </div>
                     <div style="overflow-x: auto;">
                         <table class="data-table" id="warrantiesTable">
@@ -3115,7 +3125,10 @@
                         <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
                             <i class="fas fa-exclamation-triangle"></i> Garantías Pendientes
                         </h3>
-                        <div style="display: flex; gap: 12px; align-items: center;">
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <div class="search-box">
+                                <input type="text" id="pendingWarrantiesSearch" class="form-control" placeholder="Buscar por cliente o factura..." style="min-width: 220px;" oninput="loadPendingWarrantiesTable()">
+                            </div>
                             <div style="font-weight: 700; color: var(--gold-dark);" id="pendingWarrantiesTotalLabel">Total: $0</div>
                             <button class="btn btn-sm btn-info" onclick="loadPendingWarrantiesTable()">
                                 <i class="fas fa-sync-alt"></i> Refrescar
@@ -3153,11 +3166,16 @@
 
                 <!-- Tabla de ventas pendientes -->
                 <div class="table-wrapper">
-                    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <h3><i class="fas fa-hourglass-half"></i> Ventas Pendientes de Confirmación</h3>
-                        <button class="btn btn-sm btn-info" onclick="loadPendingSalesTable()">
-                            <i class="fas fa-sync-alt"></i> Refrescar
-                        </button>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <div class="search-box">
+                                <input type="text" id="pendingSalesSearch" class="form-control" placeholder="Buscar por factura, cliente o método..." style="min-width: 240px;" oninput="loadPendingSalesTable()">
+                            </div>
+                            <button class="btn btn-sm btn-info" onclick="loadPendingSalesTable()">
+                                <i class="fas fa-sync-alt"></i> Refrescar
+                            </button>
+                        </div>
                     </div>
                     <div style="overflow-x: auto;">
                         <table class="data-table" id="pendingTable">
@@ -3248,11 +3266,16 @@
 
                     <!-- Tabla de detalles -->
                     <div class="table-wrapper">
-                        <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
                             <h3><i class="fas fa-list"></i> <span id="detailsTableTitle">Movimientos</span></h3>
-                            <button class="btn btn-sm btn-info" onclick="loadHistoryCards().then(() => showHistoryDetails(currentHistoryDetailType))">
-                                <i class="fas fa-sync-alt"></i> Refrescar
-                            </button>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <div class="search-box">
+                                    <input type="text" id="historyDetailsSearch" class="form-control" placeholder="Buscar en movimientos..." style="min-width: 240px;" oninput="showHistoryDetails(currentHistoryDetailType)">
+                                </div>
+                                <button class="btn btn-sm btn-info" onclick="loadHistoryCards().then(() => showHistoryDetails(currentHistoryDetailType))">
+                                    <i class="fas fa-sync-alt"></i> Refrescar
+                                </button>
+                            </div>
                         </div>
                         <div style="overflow-x: auto;">
                             <table class="data-table" id="historyDetailsTable">
@@ -3275,9 +3298,14 @@
                             <h2 class="history-details-title">
                                 <i class="fas fa-shield-alt" style="color: var(--gold-dark);"></i> Registro de Movimientos Administrativos
                             </h2>
-                            <button class="btn btn-sm btn-info" onclick="loadAuditLogs()">
-                                <i class="fas fa-sync-alt"></i> Refrescar
-                            </button>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <div class="search-box">
+                                    <input type="text" id="auditLogsSearch" class="form-control" placeholder="Buscar por usuario, acción o entidad..." style="min-width: 240px;" oninput="loadAuditLogs()">
+                                </div>
+                                <button class="btn btn-sm btn-info" onclick="loadAuditLogs()">
+                                    <i class="fas fa-sync-alt"></i> Refrescar
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="table-wrapper">
@@ -5285,6 +5313,17 @@
 
             if (!data) data = [];
 
+            const searchTerm = (document.getElementById('historyDetailsSearch')?.value || '').toLowerCase().trim();
+            if (searchTerm) {
+                data = data.filter(item => {
+                    try {
+                        return JSON.stringify(item).toLowerCase().includes(searchTerm);
+                    } catch (e) {
+                        return false;
+                    }
+                });
+            }
+
             // Ordenar por fecha (más reciente primero)
             data.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || b.createdAt));
             if (type === 'sales') {
@@ -6145,7 +6184,9 @@
                             <tbody>
             `;
 
-            warranties.forEach(warranty => {
+            const list = filteredWarranties;
+
+            list.forEach(warranty => {
                 const wTotal = (parseFloat(warranty.totalCost) || 0) + (parseFloat(warranty.shippingValue || warranty.shipping_value) || 0);
                 html += `
                     <tr style="border-bottom: 1px solid #eee;">
@@ -6487,7 +6528,13 @@
             content += `Fecha\t\tVenta ID\t\tCliente\t\tMotivo\t\tCosto\t\tEstado\n`;
             content += `--------------------------------------------------------------------------------\n`;
 
-            warranties.forEach(warranty => {
+            if (list.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding: 1.5rem; color:#666;">No se encontraron garantías para ese filtro.</td></tr>`;
+                if (statsContainer) statsContainer.innerHTML = '';
+                return;
+            }
+
+            list.forEach(warranty => {
                 const wTotal = (parseFloat(warranty.totalCost) || 0) + (parseFloat(warranty.shippingValue || warranty.shipping_value) || 0);
                 content += `${formatDate(warranty.createdAt)}\t${warranty.saleId || 'N/A'}\t${(warranty.customerName || 'N/A').substring(0, 15)}\t${getWarrantyReasonText(warranty.reason).substring(0, 15)}\t${formatCurrency(wTotal)}\t${getWarrantyStatusText(warranty.status || 'pending')}\n`;
             });
@@ -7226,6 +7273,15 @@
 
             // Ordenar por fecha de creación (más recientes primero)
             warranties.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            const searchTerm = (document.getElementById('warrantiesSearch')?.value || '').toLowerCase().trim();
+            const filteredWarranties = searchTerm ? warranties.filter(w => {
+                const customer = (w.customerName || '').toLowerCase();
+                const id = String(w.id || w.originalSaleId || w.original_invoice_id || '').toLowerCase();
+                const status = (w.status || '').toLowerCase();
+                const prod = `${w.originalProductName || ''} ${w.newProductName || ''} ${w.product_ref || ''}`.toLowerCase();
+                return customer.includes(searchTerm) || id.includes(searchTerm) || status.includes(searchTerm) || prod.includes(searchTerm);
+            }) : warranties;
 
             // Calcular estadísticas
             let pendingCount = 0;
@@ -10678,10 +10734,24 @@
 
                 localStorage.setItem('destelloOroAllExpenses', JSON.stringify(expenses)); // Cache específico para la tabla general
 
+                const searchTerm = (document.getElementById('expensesSearch')?.value || '').toLowerCase().trim();
+                const filteredExpenses = searchTerm ? expenses.filter(expense => {
+                    const desc = (expense.description || '').toLowerCase();
+                    const user = getUserName(expense.user || '').toLowerCase();
+                    const val = String(expense.amount || '').toLowerCase();
+                    const date = (expense.date || '').toLowerCase();
+                    return desc.includes(searchTerm) || user.includes(searchTerm) || val.includes(searchTerm) || date.includes(searchTerm);
+                }) : expenses;
+
                 const tableBody = document.getElementById('expensesTableBody');
                 tableBody.innerHTML = '';
 
-                expenses.forEach(expense => {
+                if (filteredExpenses.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 1.5rem; color:#666;">No se encontraron gastos para ese filtro.</td></tr>`;
+                    return;
+                }
+
+                filteredExpenses.forEach(expense => {
                     const row = document.createElement('tr');
 
                     row.innerHTML = `
@@ -10781,9 +10851,23 @@
                     return;
                 }
 
+                const searchTerm = (document.getElementById('pendingWarrantiesSearch')?.value || '').toLowerCase().trim();
+                const list = searchTerm ? enriched.filter(w => {
+                    const customer = (w.customerName || '').toLowerCase();
+                    const saleId = String(w.originalSaleId || w.original_invoice_id || '').toLowerCase();
+                    const status = (w.status || '').toLowerCase();
+                    return customer.includes(searchTerm) || saleId.includes(searchTerm) || status.includes(searchTerm);
+                }) : enriched;
+
                 let totalValue = 0;
 
-                enriched.forEach(warranty => {
+                if (list.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 1.5rem; color:#666;">No se encontraron garantías pendientes para ese filtro.</td></tr>`;
+                    if (totalLabel) totalLabel.textContent = 'Total: $0';
+                    return;
+                }
+
+                list.forEach(warranty => {
                     const row = document.createElement('tr');
                     totalValue += warranty.pendingValue;
 
@@ -10841,11 +10925,20 @@
                 const tableBody = document.getElementById('pendingTableBody');
                 tableBody.innerHTML = '';
 
+                const searchTerm = (document.getElementById('pendingSalesSearch')?.value || '').toLowerCase().trim();
+                const list = searchTerm ? pendingSales.filter(sale => {
+                    const invoice = String(sale.invoice_number || sale.invoiceNumber || sale.id || '').toLowerCase();
+                    const customer = (sale.customerInfo ? sale.customerInfo.name : (sale.customer_name || '')).toLowerCase();
+                    const payment = getPaymentMethodName(sale.paymentMethod).toLowerCase();
+                    const products = (sale.products || []).map(p => p.productName || p.product_name || '').join(' ').toLowerCase();
+                    return invoice.includes(searchTerm) || customer.includes(searchTerm) || payment.includes(searchTerm) || products.includes(searchTerm);
+                }) : pendingSales;
+
                 // Si no hay ventas pendientes, mostrar mensaje
-                if (pendingSales.length === 0) {
+                if (list.length === 0) {
                     tableBody.innerHTML = `
                         <tr>
-                            <td colspan="8" style="text-align: center; padding: 2rem; color: #666;">
+                            <td colspan="10" style="text-align: center; padding: 2rem; color: #666;">
                                 <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;"></i>
                                 <p style="font-size: 1.1rem; font-weight: 500;">No hay pagos pendientes de confirmación</p>
                                 <p style="font-size: 0.9rem;">Todas las ventas han sido confirmadas o canceladas</p>
@@ -10855,7 +10948,7 @@
                     return;
                 }
 
-                pendingSales.forEach(sale => {
+                list.forEach(sale => {
                     const row = document.createElement('tr');
 
                     // Obtener información de productos
@@ -11474,13 +11567,22 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    if (data.logs.length === 0) {
+                    const searchTerm = (document.getElementById('auditLogsSearch')?.value || '').toLowerCase().trim();
+                    const logs = searchTerm ? data.logs.filter(log => {
+                        const user = (log.user_username || '').toLowerCase();
+                        const action = (log.action_type || '').toLowerCase();
+                        const entity = `${log.entity_type || ''} ${log.entity_id || ''}`.toLowerCase();
+                        const details = (log.details || '').toLowerCase();
+                        return user.includes(searchTerm) || action.includes(searchTerm) || entity.includes(searchTerm) || details.includes(searchTerm);
+                    }) : data.logs;
+
+                    if (logs.length === 0) {
                         tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay registros de auditoría.</td></tr>';
                         return;
                     }
 
                     tableBody.innerHTML = '';
-                    data.logs.forEach(log => {
+                    logs.forEach(log => {
                         const row = document.createElement('tr');
                         
                         let actionBadgeClass = 'badge-info';
