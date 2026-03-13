@@ -66,6 +66,11 @@
             overflow-x: hidden;
         }
 
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         /* Scrollbar transparente y estilizada */
         ::-webkit-scrollbar {
             width: 10px;
@@ -725,6 +730,8 @@
             max-width: 1400px;
             margin: 1.5rem auto;
             padding: 0 1rem;
+            width: 100%;
+            overflow-x: hidden;
         }
 
         .section-container {
