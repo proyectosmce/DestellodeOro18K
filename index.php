@@ -1127,6 +1127,8 @@
             align-items: flex-end;
             gap: 4px;
             text-align: right;
+            justify-content: center;
+            transform: translateY(8px);
         }
 
         .enhanced-invoice .invoice-qr img {
@@ -1158,17 +1160,22 @@
             align-items: center;
             justify-content: center;
             padding: 3px 8px;
-            background: #000;
-            color: #fff;
+            background: #f5f5f5;
+            color: #000;
+            border: 1px solid #000;
             border-radius: 999px;
             font-weight: 700;
             font-size: 0.7rem;
             letter-spacing: 1px;
             text-transform: uppercase;
+            cursor: pointer;
         }
 
         .enhanced-invoice .brand-domain {
             font-weight: 600;
+            color: #111;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .enhanced-invoice .invoice-date-line {
@@ -3251,7 +3258,7 @@
                 <div class="invoice-qr">
                     <div class="qr-meta">
                         <span class="www-badge">www</span>
-                        <span class="brand-domain">destellodeoro18k.com</span>
+                        <a class="brand-domain" href="https://destellodeoro18k.com" target="_blank" rel="noopener noreferrer">destellodeoro18k.com</a>
                     </div>
                     <img src="qrinstagram.jpeg" alt="Instagram Destello de Oro 18K">
                 </div>
