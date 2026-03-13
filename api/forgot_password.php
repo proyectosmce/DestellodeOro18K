@@ -96,36 +96,45 @@ $mail->CharSet    = 'UTF-8';
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
                 :root { color-scheme: light; }
-                body { margin:0; padding:0; background:#f7f5f0; font-family: 'Segoe UI', Arial, sans-serif; }
-                .wrapper { width:100%; background:#f7f5f0; padding:24px 12px; }
+                body { margin:0; padding:0; background:#f6f2e8; font-family: 'Segoe UI', Arial, sans-serif; }
+                .wrapper { width:100%; background:#f6f2e8; padding:26px 14px; }
                 .card {
-                    max-width:600px; margin:0 auto; background:#ffffff; border-radius:14px;
-                    border:1px solid #e8e2d2; box-shadow:0 10px 30px rgba(0,0,0,0.06); overflow:hidden;
+                    max-width:600px; margin:0 auto; background:#ffffff; border-radius:16px;
+                    border:1px solid #e7dec7; box-shadow:0 12px 34px rgba(0,0,0,0.08); overflow:hidden;
                 }
                 .header {
-                    padding:20px 24px;
-                    background:linear-gradient(135deg, #d4af37, #f3d87a);
-                    color:#111;
+                    padding:22px 24px;
+                    color:#0f0b00;
                     text-align:center;
+                    background:
+                        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.45) 0, rgba(255,255,255,0) 35%),
+                        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.35) 0, rgba(255,255,255,0) 30%),
+                        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.28) 0, rgba(255,255,255,0) 32%),
+                        linear-gradient(135deg, #d4af37, #f7e08a);
                 }
-                .brand { font-size:20px; font-weight:700; letter-spacing:0.5px; margin:0; }
-                .subtitle { margin:6px 0 0; font-size:13px; font-weight:500; opacity:0.9; }
-                .body { padding:24px; color:#2a2a2a; font-size:15px; line-height:1.6; }
+                .brand { font-size:21px; font-weight:800; letter-spacing:0.6px; margin:0; }
+                .subtitle { margin:8px 0 0; font-size:13px; font-weight:600; opacity:0.92; }
+                .body { padding:26px 26px 22px; color:#2a2412; font-size:15px; line-height:1.65; }
                 .btn {
-                    display:inline-block; background:#d4af37; color:#111; text-decoration:none;
-                    padding:12px 22px; border-radius:999px; font-weight:700; letter-spacing:0.2px;
-                    box-shadow:0 8px 20px rgba(212,175,55,0.35);
+                    display:inline-block; background:#d4af37; color:#0f0b00; text-decoration:none;
+                    padding:13px 24px; border-radius:999px; font-weight:800; letter-spacing:0.2px;
+                    box-shadow:0 10px 26px rgba(212,175,55,0.38);
+                    border:1px solid rgba(0,0,0,0.06);
                 }
                 .btn:hover { filter:brightness(0.98); }
-                .link { word-break:break-all; color:#555; font-size:13px; }
-                .note { margin-top:18px; font-size:13px; color:#666; }
+                .divider {
+                    height:1px; margin:22px 0; border:0;
+                    background:linear-gradient(90deg, rgba(0,0,0,0) 0%, #e7dec7 20%, #d4af37 50%, #e7dec7 80%, rgba(0,0,0,0) 100%);
+                }
+                .link { word-break:break-all; color:#5a5138; font-size:13px; }
+                .note { margin-top:18px; font-size:13px; color:#6a644f; }
                 .footer {
-                    padding:18px 24px; background:#faf8f3; color:#777; font-size:12px; text-align:center;
-                    border-top:1px solid #eee;
+                    padding:18px 24px; background:#fbf8f1; color:#7b7157; font-size:12px; text-align:center;
+                    border-top:1px solid #efe6d3;
                 }
                 @media (max-width:480px){
-                    .card{ border-radius:10px; }
-                    .body{ padding:20px; font-size:14px; }
+                    .card{ border-radius:12px; }
+                    .body{ padding:22px 20px 20px; font-size:14px; }
                     .btn{ width:100%; text-align:center; }
                 }
             </style>
@@ -143,6 +152,7 @@ $mail->CharSet    = 'UTF-8';
                         <p style="text-align:center; margin:24px 0;">
                             <a class="btn" href="{$reset_link}">Restablecer contraseña</a>
                         </p>
+                        <hr class="divider">
                         <p>Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
                         <p class="link">{$reset_link}</p>
                         <p class="note">El enlace es válido por 1 hora. Si no solicitaste este cambio, ignora este correo.</p>
