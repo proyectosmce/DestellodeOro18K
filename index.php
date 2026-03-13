@@ -1272,16 +1272,6 @@
             gap: 10px;
         }
 
-        .enhanced-invoice .qr-meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
-            text-align: right;
-            justify-content: center;
-            transform: translateY(14px);
-        }
-
         .enhanced-invoice .invoice-qr img {
             max-width: 130px;
             border: 1px solid #f1f1f1;
@@ -1304,30 +1294,6 @@
             line-height: 1.3;
             text-align: center;
             margin: 0;
-        }
-
-        .enhanced-invoice .www-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3px 8px;
-            background: #f5f5f5;
-            color: #000;
-            border: 1px solid #000;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .enhanced-invoice .brand-domain {
-            font-weight: 600;
-            color: #111;
-            text-decoration: none;
-            cursor: pointer;
         }
 
         .enhanced-invoice .invoice-date-line {
@@ -1498,6 +1464,26 @@
             justify-content: center;
             margin-top: 1.3rem;
             flex-wrap: wrap;
+        }
+
+        .enhanced-invoice .invoice-footer {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #222;
+        }
+
+        .enhanced-invoice .invoice-footer .whatsapp {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #128C7E;
+            font-weight: 700;
+        }
+
+        .enhanced-invoice .invoice-footer i {
+            color: #25D366;
         }
 
         @media print {
@@ -3476,10 +3462,6 @@
                     <div class="brand-nit">Nit: 1007854646-9</div>
                 </div>
                 <div class="invoice-qr">
-                    <div class="qr-meta">
-                        <a class="www-badge" href="https://destellodeoro18k.com" target="_blank" rel="noopener noreferrer">www</a>
-                        <a class="brand-domain" href="https://destellodeoro18k.com" target="_blank" rel="noopener noreferrer">destellodeoro18k.com</a>
-                    </div>
                     <img src="qrinstagram.jpeg" alt="Instagram Destello de Oro 18K">
                 </div>
             </div>
@@ -3577,6 +3559,12 @@
                     <li>Si recibes tu joya en mal estado, comunícate con nosotros el mismo día o máximo al día siguiente de la entrega para gestionar el cambio con gusto.</li>
                     <li>Si no te comunicas con nosotros dentro de este plazo, se entenderá que la joya fue recibida en buen estado y no será posible realizar el cambio.</li>
                 </ul>
+            </div>
+
+            <div class="invoice-footer">
+                <div class="whatsapp"><i class="fab fa-whatsapp"></i> Para mayor información contáctanos al WhatsApp: <span id="invoiceWhatsapp">+57 300 123 4567</span></div>
+                <div>Página web: <strong>destellodeoro18k.com</strong></div>
+                <div><strong>¡Gracias por tu compra!</strong></div>
             </div>
 
             <div class="invoice-actions">
@@ -9843,6 +9831,7 @@
             const logoData = await getBase64Image('imagenoriginal.jpeg');
             const qrData = await getTintedImage('qrinstagram.jpeg') || await getBase64Image('qrinstagram.jpeg');
             const bgData = await getFadedImage('fondo.jpeg', 0.08);
+            const whatsappNumber = '+57 318 268 7488';
 
             if (bgData) {
                 pdf.addImage(bgData, 'JPEG', 0, 0, pageWidth, pageHeight, '', 'FAST');
@@ -10010,6 +9999,19 @@
                 bulletY += lines.length * 5;
             });
 
+            // Footer contact
+            bulletY += 8;
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(18, 140, 126);
+            pdf.text(`WhatsApp: ${whatsappNumber}`, pageWidth / 2, bulletY, { align: 'center' });
+            bulletY += 6;
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Página web: destellodeoro18k.com', pageWidth / 2, bulletY, { align: 'center' });
+            bulletY += 6;
+            pdf.setFont("helvetica", "bold");
+            pdf.text('¡Gracias por tu compra!', pageWidth / 2, bulletY, { align: 'center' });
+
             return pdf;
         }
 
@@ -10168,6 +10170,7 @@
 
             tintInvoiceQr();
 
+            document.getElementById('invoiceWhatsapp').textContent = '+57 318 268 7488';
             // Cabecera y metadatos
             document.getElementById('invoiceNumber').textContent = sale.id || '---';
             document.getElementById('invoiceDate').textContent = formatDateLong(sale.date || sale.createdAt || sale.created_at);
