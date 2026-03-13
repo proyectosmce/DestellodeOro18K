@@ -1128,7 +1128,7 @@
             gap: 4px;
             text-align: right;
             justify-content: center;
-            transform: translateY(8px);
+            transform: translateY(14px);
         }
 
         .enhanced-invoice .invoice-qr img {
@@ -1169,6 +1169,7 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .enhanced-invoice .brand-domain {
@@ -3257,7 +3258,7 @@
                 </div>
                 <div class="invoice-qr">
                     <div class="qr-meta">
-                        <span class="www-badge">www</span>
+                        <a class="www-badge" href="https://destellodeoro18k.com" target="_blank" rel="noopener noreferrer">www</a>
                         <a class="brand-domain" href="https://destellodeoro18k.com" target="_blank" rel="noopener noreferrer">destellodeoro18k.com</a>
                     </div>
                     <img src="qrinstagram.jpeg" alt="Instagram Destello de Oro 18K">
