@@ -1101,12 +1101,17 @@
             grid-template-columns: 170px 1fr 150px;
             gap: 1rem;
             align-items: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .enhanced-invoice .invoice-logo-img {
             max-width: 150px;
             height: auto;
+        }
+
+        .enhanced-invoice .brand-block {
+            text-align: center;
+            transform: translate(-6px, -6px);
         }
 
         .enhanced-invoice .invoice-qr {
@@ -1136,6 +1141,7 @@
             color: #111;
             font-size: 1.15rem;
             text-align: center;
+            margin-bottom: 2px;
         }
 
         .enhanced-invoice .brand-owner,
@@ -1144,6 +1150,7 @@
             color: #333;
             line-height: 1.3;
             text-align: center;
+            margin: 0;
         }
 
         .enhanced-invoice .www-badge {
@@ -3236,7 +3243,7 @@
                 <div>
                     <img src="imagenoriginal.jpeg" alt="Logo Destello de Oro 18K" class="invoice-logo-img">
                 </div>
-                <div>
+                <div class="brand-block">
                     <div class="brand-name">DESTELLO DE ORO 18K</div>
                     <div class="brand-owner">LUISA FERNANDA CASTRO</div>
                     <div class="brand-nit">Nit: 1007854646-9</div>
