@@ -1210,9 +1210,15 @@
 
         .enhanced-invoice .invoice-meta-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.4rem;
+            grid-template-columns: minmax(360px, 1.2fr) 0.8fr;
+            gap: 1rem;
             margin-bottom: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .enhanced-invoice .invoice-meta-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .enhanced-invoice .info-card {
