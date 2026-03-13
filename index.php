@@ -1083,6 +1083,9 @@
             .history-cards-container {
                 grid-template-columns: 1fr !important;
             }
+            .enhanced-invoice .invoice-qr img {
+                max-width: 70vw;
+            }
         }
 
         /* Badges */
@@ -1218,17 +1221,21 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                width: 100%;
             }
             .enhanced-invoice .qr-meta {
                 align-items: center;
                 text-align: center;
                 transform: none;
+                width: 100%;
             }
             .enhanced-invoice .www-badge {
                 margin-bottom: 4px;
             }
             .enhanced-invoice .invoice-qr img {
-                max-width: 120px;
+                width: 100%;
+                max-width: 160px;
+                height: auto;
             }
         }
 
