@@ -9497,20 +9497,29 @@
                     ctx.drawImage(img, 0, 0);
                     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                     const data = imageData.data;
-                    // Parse target color
-                    const hex = color.replace('#', '');
-                    const rT = parseInt(hex.substring(0, 2), 16);
-                    const gT = parseInt(hex.substring(2, 4), 16);
-                    const bT = parseInt(hex.substring(4, 6), 16);
+                    // Instagram gradient (left->right)
+                    const gradientColors = ['#F58529', '#DD2A7B']; // naranja -> magenta
+                    const toRgb = (hex) => ({
+                        r: parseInt(hex.substr(1, 2), 16),
+                        g: parseInt(hex.substr(3, 2), 16),
+                        b: parseInt(hex.substr(5, 2), 16)
+                    });
+                    const c1 = toRgb(gradientColors[0]);
+                    const c2 = toRgb(gradientColors[1]);
+                    const lerp = (a, b, t) => Math.round(a + (b - a) * t);
+
                     for (let i = 0; i < data.length; i += 4) {
                         const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
                         if (a === 0) continue;
                         // Luminance to keep only dark modules
                         const lum = 0.299 * r + 0.587 * g + 0.114 * b;
                         if (lum < 200) { // dark => tint
-                            data[i] = rT;
-                            data[i + 1] = gT;
-                            data[i + 2] = bT;
+                            const pixelIndex = i / 4;
+                            const x = pixelIndex % canvas.width;
+                            const t = canvas.width > 1 ? x / (canvas.width - 1) : 0;
+                            data[i] = lerp(c1.r, c2.r, t);
+                            data[i + 1] = lerp(c1.g, c2.g, t);
+                            data[i + 2] = lerp(c1.b, c2.b, t);
                             data[i + 3] = a;
                         } else {
                             // make white
