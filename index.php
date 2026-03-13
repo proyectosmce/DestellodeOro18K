@@ -1071,12 +1071,12 @@
             font-size: 0.8rem;
         }
 
-        /* NUEVO: Estilos mejorados para la factura (SIN REDES SOCIALES) */
+        /* NUEVO: Estilos mejorados para la factura (alineada a factura.jpeg) */
         .invoice-container.enhanced-invoice {
-            background: white;
-            border: 2px solid #333;
-            font-family: 'Arial', sans-serif;
-            max-width: 800px;
+            background: #fff;
+            border: 2px solid #d9d9d9;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            max-width: 900px;
             padding: 1.5rem;
             width: 95%;
             margin: 0 auto;
@@ -1086,117 +1086,197 @@
             .invoice-container.enhanced-invoice {
                 padding: 1rem;
             }
+            .enhanced-invoice .invoice-branding {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .enhanced-invoice .invoice-qr {
+                justify-content: center;
+            }
         }
 
-        .enhanced-invoice .invoice-header {
-            text-align: left;
-            border-bottom: 2px solid #D4AF37;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+        .enhanced-invoice .invoice-branding {
+            display: grid;
+            grid-template-columns: 160px 1fr 150px;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
         }
 
-        .enhanced-invoice .invoice-logo {
-            font-size: 2rem;
-            color: #D4AF37;
-            margin-bottom: 8px;
+        .enhanced-invoice .invoice-logo-img {
+            max-width: 150px;
+            height: auto;
         }
 
-        .enhanced-invoice .company-info {
+        .enhanced-invoice .invoice-qr {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .enhanced-invoice .invoice-qr img {
+            max-width: 130px;
+            border: 1px solid #f1f1f1;
+            border-radius: 8px;
+        }
+
+        .enhanced-invoice .brand-name {
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            color: #111;
+            font-size: 1.15rem;
+        }
+
+        .enhanced-invoice .brand-owner,
+        .enhanced-invoice .brand-nit {
+            font-size: 0.95rem;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        .enhanced-invoice .brand-links {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        .enhanced-invoice .invoice-date-line {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin: 0.4rem 0 0.8rem 0;
+        }
+
+        .enhanced-invoice .invoice-meta-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .enhanced-invoice .info-card {
+            background: #f9f9f9;
+            border: 1px solid #ededed;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .enhanced-invoice .info-row {
             display: flex;
             justify-content: space-between;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-            gap: 1rem;
+            gap: 0.6rem;
+            font-size: 0.92rem;
+            padding: 2px 0;
         }
 
-        .enhanced-invoice .company-details {
-            flex: 1;
-            min-width: 250px;
+        .enhanced-invoice .info-label {
+            color: #555;
+            font-weight: 500;
         }
 
-        .enhanced-invoice .invoice-details {
-            flex: 1;
+        .enhanced-invoice .info-value {
+            color: #111;
+            font-weight: 600;
             text-align: right;
-            min-width: 250px;
         }
 
-        .enhanced-invoice .invoice-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .enhanced-invoice .client-info {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .enhanced-invoice .client-info h3 {
-            color: #D4AF37;
-            margin-bottom: 12px;
-            font-size: 1.1rem;
+        .enhanced-invoice .invoice-table-wrapper {
+            position: relative;
+            overflow: hidden;
         }
 
         .enhanced-invoice .product-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 0.5rem;
             font-size: 0.9rem;
+            position: relative;
         }
 
-        .enhanced-invoice .product-table th {
-            background: #D4AF37;
-            color: white;
-            padding: 10px;
+        .enhanced-invoice .product-table thead th {
+            background: #f0f0f0;
+            color: #111;
+            padding: 9px 10px;
             text-align: left;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 0.9rem;
+            border-bottom: 1px solid #dcdcdc;
         }
 
         .enhanced-invoice .product-table td {
             padding: 10px;
-            border-bottom: 1px solid #ddd;
-            font-size: 0.85rem;
+            border-bottom: 1px solid #ededed;
+            font-size: 0.88rem;
         }
 
-        .enhanced-invoice .warranty-section {
-            background: #fff8e1;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            border-left: 3px solid #D4AF37;
-            font-size: 0.85rem;
+        .enhanced-invoice .product-table tbody {
+            position: relative;
         }
 
-        .enhanced-invoice .warranty-section h4 {
-            color: #D4AF37;
-            margin-bottom: 8px;
-            font-size: 1rem;
+        .enhanced-invoice .product-table tbody::after {
+            content: '';
+            position: absolute;
+            inset: 10% 25%;
+            background-image: url('imagenoriginal.jpeg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 200px;
+            opacity: 0.08;
+            pointer-events: none;
         }
 
-        .enhanced-invoice .total-section {
-            text-align: right;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 2px solid #333;
+        .enhanced-invoice .summary-box {
+            margin-top: 0.4rem;
+            margin-left: auto;
+            max-width: 340px;
+            background: #fafafa;
+            border: 1px solid #e6e6e6;
+            border-radius: 8px;
+            padding: 10px 12px;
         }
 
-        .enhanced-invoice .total-amount {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #D4AF37;
+        .enhanced-invoice .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.95rem;
         }
 
-        .enhanced-invoice .contact-info {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-            font-size: 0.85rem;
-            color: #666;
+        .enhanced-invoice .summary-row.total {
+            font-weight: 800;
+            font-size: 1.2rem;
+            border-top: 1px solid #ccc;
+            margin-top: 6px;
+            padding-top: 10px;
+            color: #000;
+        }
+
+        .enhanced-invoice .warranty-bullets {
+            background: #f7f7f7;
+            border: 1px solid #e3e3e3;
+            border-radius: 8px;
+            padding: 12px 14px;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .enhanced-invoice .warranty-bullets ul {
+            margin: 0;
+            padding-left: 1.1rem;
+        }
+
+        .enhanced-invoice .warranty-bullets li {
+            margin-bottom: 6px;
+        }
+
+        .enhanced-invoice .invoice-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 1.3rem;
+            flex-wrap: wrap;
         }
 
         .payment-badge {
@@ -3130,52 +3210,70 @@
     <!-- Modal de factura MEJORADO SIN REDES SOCIALES -->
     <div id="invoiceModal" class="invoice-modal">
         <div class="invoice-container enhanced-invoice">
-            <div class="invoice-header">
-                <i class="fas fa-gem invoice-logo"></i>
-                <h2 style="color: #D4AF37; font-family: 'Playfair Display', serif;">Destello de Oro 18K</h2>
-                <p>Factura de Venta - Tienda de Oro Laminado</p>
-            </div>
-
-            <div class="company-info">
-                <div class="company-details">
-                    <p><strong>DESTELLO DE ORO 18K</strong></p>
-                    <p>Tienda de Oro Laminado</p>
-                    <p>Contacto: 3182687488</p>
+            <div class="invoice-branding">
+                <div>
+                    <img src="imagenoriginal.jpeg" alt="Logo Destello de Oro 18K" class="invoice-logo-img">
                 </div>
-                <div class="invoice-details">
-                    <div class="invoice-title">FACTURA DE VENTA</div>
-                    <p id="invoiceNumber">Factura #0001</p>
-                    <p id="invoiceDate">Fecha: 01/01/2026</p>
-                    <p id="invoicePaymentMethod">Método de Pago: Efectivo</p>
+                <div>
+                    <div class="brand-name">DESTELLO DE ORO 18K</div>
+                    <div class="brand-owner">LUISA FERNANDA CASTRO</div>
+                    <div class="brand-nit">Nit: 1007854646-9</div>
+                    <div class="brand-links">
+                        <span>destellodeoro18k.com</span>
+                        <span>@destellodeoro18k</span>
+                    </div>
+                </div>
+                <div class="invoice-qr">
+                    <img src="qrinstagram.jpeg" alt="Instagram Destello de Oro 18K">
                 </div>
             </div>
 
-            <div class="client-info">
-                <h3>DATOS DEL CLIENTE</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
-                    <div>
-                        <strong>Nombre:</strong> <span id="invoiceCustomerName">Cliente de mostrador</span>
+            <div class="invoice-date-line" id="invoiceDate">Fecha</div>
+
+            <div class="invoice-meta-grid">
+                <div class="info-card">
+                    <div class="info-row">
+                        <span class="info-label">Nombre completo</span>
+                        <span class="info-value" id="invoiceCustomerName">Cliente de mostrador</span>
                     </div>
-                    <div>
-                        <strong>Cédula:</strong> <span id="invoiceCustomerId">No proporcionada</span>
+                    <div class="info-row">
+                        <span class="info-label">Cédula de ciudadanía</span>
+                        <span class="info-value" id="invoiceCustomerId">No proporcionada</span>
                     </div>
-                    <div>
-                        <strong>Celular:</strong> <span id="invoiceCustomerPhone">No proporcionado</span>
+                    <div class="info-row">
+                        <span class="info-label">Número de celular</span>
+                        <span class="info-value" id="invoiceCustomerPhone">No proporcionado</span>
                     </div>
-                    <div>
-                        <strong>Dirección:</strong> <span id="invoiceCustomerAddress">No proporcionada</span>
+                    <div class="info-row">
+                        <span class="info-label">Dirección</span>
+                        <span class="info-value" id="invoiceCustomerAddress">No proporcionada</span>
                     </div>
-                    <div>
-                        <strong>Ciudad:</strong> <span id="invoiceCustomerCity">No proporcionada</span>
+                    <div class="info-row">
+                        <span class="info-label">Ciudad/Departamento</span>
+                        <span class="info-value" id="invoiceCustomerCity">No proporcionada</span>
                     </div>
-                    <div>
-                        <strong>Correo:</strong> <span id="invoiceCustomerEmail">No proporcionado</span>
+                    <div class="info-row">
+                        <span class="info-label">Correo electrónico</span>
+                        <span class="info-value" id="invoiceCustomerEmail">No proporcionado</span>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-row">
+                        <span class="info-label">Forma de pago:</span>
+                        <span class="info-value" id="invoicePaymentMethod">Efectivo</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">N.º de factura:</span>
+                        <span class="info-value" id="invoiceNumber">0001</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Garantía válida hasta:</span>
+                        <span class="info-value" id="invoiceWarrantyUntil">--/--/----</span>
                     </div>
                 </div>
             </div>
 
-            <div>
-                <h3 style="color: #D4AF37; margin-bottom: 0.75rem; font-size: 1rem;">DETALLES DE LA COMPRA</h3>
+            <div class="invoice-table-wrapper">
                 <table class="product-table">
                     <thead>
                         <tr>
@@ -3192,40 +3290,40 @@
                 </table>
             </div>
 
-            <div class="warranty-section">
-                <h4>📋 GARANTÍA DE TU JOYA</h4>
-                <p style="font-size: 0.85rem; line-height: 1.4;">
-                    Tu joya cuenta con <strong>12 meses de garantía</strong> por cambio de color desde la fecha de
-                    compra.
-                    Esta garantía no cubra daños por mal uso, como cadenas rotas, rayones, modificaciones o piezas
-                    incompletas.
-                    En caso de aplicar la garantía, tu joya será reemplazada por una nueva (sin opción de reembolso).
-                    Si recibes tu joya en mal estado, repórtalo dentro de los <strong>3 días hábiles</strong>
-                    posteriores a la entrega
-                    para gestionar el cambio con gusto.
-                </p>
-                <p style="font-size: 0.85rem; line-height: 1.4; margin-top: 8px;">
-                    <strong>IMPORTANTE:</strong> Si tu joya presenta un cambio de tonalidad dentro del tiempo
-                    establecido,
-                    deberás cubrir el costo del envío hacia nuestras instalaciones, y nosotros asumimos el costo del
-                    envío de regreso.
-                </p>
-            </div>
-
-            <div class="total-section">
-                <div style="font-size: 1.2rem; font-weight: bold;">
-                    TOTAL: <span id="invoiceTotal" class="total-amount">$0</span>
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="invoiceSubtotalValue">$0</span>
+                </div>
+                <div class="summary-row" id="invoiceDiscountRow">
+                    <span>Descuento</span>
+                    <span id="invoiceDiscountValue">-$0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Envío</span>
+                    <span id="invoiceDeliveryValue">$0</span>
+                </div>
+                <div class="summary-row" id="invoiceWarrantyRow">
+                    <span>Incremento garantía</span>
+                    <span id="invoiceWarrantyValue">$0</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="invoiceTotal">$0</span>
                 </div>
             </div>
 
-            <div class="contact-info">
-                <p>¡Gracias por tu compra! Tu satisfacción es nuestro mayor compromiso.</p>
-                <p>Para consultas o garantías, contacta al: <strong>3182687488</strong></p>
-                <p style="font-style: italic; margin-top: 8px; font-size: 0.85rem;">"En Destello de Oro 18K, cada pieza
-                    cuenta una historia de elegancia"</p>
+            <div class="warranty-bullets">
+                <ul>
+                    <li>Tu joya cuenta con <strong>12 meses de garantía por cambio de color</strong>, contados a partir de la fecha de compra.</li>
+                    <li>La garantía no cubre daños por mal uso, tales como: joyas rotas, rayones, modificaciones o piezas incompletas. En estos casos, la joya pierde automáticamente la garantía.</li>
+                    <li>En caso de aplicar la garantía, la joya será reemplazada por una nueva, sin opción de reembolso monetario.</li>
+                    <li>Si recibes tu joya en mal estado, comunícate con nosotros el mismo día o máximo al día siguiente de la entrega para gestionar el cambio con gusto.</li>
+                    <li>Si no te comunicas con nosotros dentro de este plazo, se entenderá que la joya fue recibida en buen estado y no será posible realizar el cambio.</li>
+                </ul>
             </div>
 
-            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
+            <div class="invoice-actions">
                 <button id="downloadInvoice" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.85rem;">
                     <i class="fas fa-download"></i> Descargar PDF
                 </button>
@@ -3310,6 +3408,7 @@
         let currentMovementForEdit = null;
         let currentMovementTypeForEdit = '';
         let currentHistoryDetailType = ''; // Nueva variable para rastrear vista activa
+        let currentInvoiceSale = null; // Venta mostrada en el modal de factura
 
         // Métodos de pago
         const paymentMethods = {
@@ -9348,8 +9447,191 @@
             });
         }
 
+        // Constructor común del PDF alineado al nuevo diseño de factura
+        async function buildInvoicePDFDocument(sale) {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = pdf.internal.pageSize.getWidth();
+
+            const logoData = await getBase64Image('imagenoriginal.jpeg');
+            const qrData = await getBase64Image('qrinstagram.jpeg');
+
+            let y = 12;
+            if (logoData) pdf.addImage(logoData, 'JPEG', 15, y, 30, 22);
+            if (qrData) pdf.addImage(qrData, 'JPEG', pageWidth - 45, y, 30, 30);
+
+            pdf.setFontSize(14);
+            pdf.setFont("helvetica", "bold");
+            pdf.text('DESTELLO DE ORO 18K', pageWidth / 2, y + 8, { align: 'center' });
+            pdf.setFontSize(10);
+            pdf.setFont("helvetica", "normal");
+            pdf.text('LUISA FERNANDA CASTRO', pageWidth / 2, y + 14, { align: 'center' });
+            pdf.text('Nit: 1007854646-9', pageWidth / 2, y + 20, { align: 'center' });
+            pdf.text('destellodeoro18k.com   @destellodeoro18k', pageWidth / 2, y + 26, { align: 'center' });
+
+            y += 38;
+
+            const paymentMethod = getPaymentMethodName(sale.paymentMethod || '');
+            const warrantyUntil = calculateWarrantyExpiry(sale.date);
+            const cName = sale.customerInfo?.name || 'Cliente de mostrador';
+            const cId = sale.customerInfo?.id || '';
+            const cPhone = sale.customerInfo?.phone || '';
+            const cAddress = sale.customerInfo?.address || '';
+            const cCity = sale.customerInfo?.city || '';
+            const cEmail = sale.customerInfo?.email || '';
+            const purchaseDate = formatDateLong(sale.date);
+
+            // Fecha principal
+            pdf.setFont("helvetica", "bold");
+            pdf.text(purchaseDate, 15, y);
+
+            // Meta derecha
+            let metaY = y - 6;
+            const metaLabelX = pageWidth - 70;
+            const metaValueX = pageWidth - 15;
+            pdf.setFontSize(10);
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Forma de pago:', metaLabelX, metaY);
+            pdf.setFont("helvetica", "bold");
+            pdf.text(paymentMethod, metaValueX, metaY, { align: 'right' });
+
+            metaY += 6;
+            pdf.setFont("helvetica", "normal");
+            pdf.text('N.º de factura:', metaLabelX, metaY);
+            pdf.setFont("helvetica", "bold");
+            pdf.text(String(sale.id || ''), metaValueX, metaY, { align: 'right' });
+
+            metaY += 6;
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Garantía válida hasta:', metaLabelX, metaY);
+            pdf.setFont("helvetica", "bold");
+            pdf.text(warrantyUntil, metaValueX, metaY, { align: 'right' });
+
+            // Datos cliente izquierda
+            let infoY = y + 2;
+            pdf.setFontSize(10);
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Nombre completo:', 15, infoY);
+            pdf.setFont("helvetica", "bold");
+            pdf.text(cName, 60, infoY);
+
+            infoY += 6;
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Cédula de ciudadanía:', 15, infoY);
+            pdf.setFont("helvetica", "bold");
+            if (cId) pdf.text(cId, 60, infoY);
+
+            infoY += 6;
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Número de celular:', 15, infoY);
+            pdf.setFont("helvetica", "bold");
+            if (cPhone) pdf.text(cPhone, 60, infoY);
+
+            infoY += 6;
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Dirección:', 15, infoY);
+            pdf.setFont("helvetica", "bold");
+            if (cAddress) pdf.text(cAddress, 60, infoY);
+
+            infoY += 6;
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Ciudad/Departamento:', 15, infoY);
+            pdf.setFont("helvetica", "bold");
+            if (cCity) pdf.text(cCity, 60, infoY);
+
+            infoY += 6;
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Correo electrónico:', 15, infoY);
+            pdf.setFont("helvetica", "bold");
+            if (cEmail) pdf.text(cEmail, 60, infoY);
+
+            let tableStartY = Math.max(infoY, metaY) + 10;
+
+            // Encabezados de tabla
+            pdf.setFont("helvetica", "bold");
+            pdf.setFillColor(240, 240, 240);
+            pdf.rect(12, tableStartY - 6, pageWidth - 24, 8, 'F');
+            pdf.text('Descripción', 15, tableStartY);
+            pdf.text('Ref', 105, tableStartY);
+            pdf.text('Cantidad', 135, tableStartY);
+            pdf.text('Precio unitario', 155, tableStartY);
+            pdf.text('Total', 185, tableStartY);
+
+            let yPos = tableStartY + 8;
+            pdf.setFont("helvetica", "normal");
+
+            (sale.products || []).forEach(item => {
+                const name = item.productName?.length > 60 ? item.productName.substring(0, 57) + '...' : item.productName;
+                pdf.text(name || '', 15, yPos);
+                pdf.text(item.productId ? String(item.productId) : '', 105, yPos);
+                pdf.text(String(item.quantity || 0), 135, yPos);
+                pdf.text(formatCurrency(item.unitPrice || 0), 155, yPos);
+                pdf.text(formatCurrency(item.subtotal || 0), 185, yPos);
+                yPos += 7;
+            });
+
+            // Resumen
+            const subtotal = Number(sale.subtotal) || 0;
+            const deliveryCost = Number(sale.deliveryCost) || 0;
+            const warrantyInc = Number(sale.warrantyIncrement) || 0;
+            const discountValue = Number(sale.discount) || 0;
+            const totalFinal = (typeof sale.total === 'number') ? sale.total : (subtotal + deliveryCost + warrantyInc);
+
+            let summaryY = yPos + 4;
+            const summaryLabelX = 140;
+            pdf.setFont("helvetica", "normal");
+            pdf.text('Subtotal', summaryLabelX, summaryY);
+            pdf.text(formatCurrency(subtotal), pageWidth - 15, summaryY, { align: 'right' });
+
+            if (discountValue > 0) {
+                summaryY += 6;
+                pdf.text('Descuento', summaryLabelX, summaryY);
+                pdf.text(`-${formatCurrency(discountValue)}`, pageWidth - 15, summaryY, { align: 'right' });
+            }
+
+            summaryY += 6;
+            pdf.text('Envío', summaryLabelX, summaryY);
+            pdf.text(formatCurrency(deliveryCost), pageWidth - 15, summaryY, { align: 'right' });
+
+            if (warrantyInc > 0) {
+                summaryY += 6;
+                pdf.text('Incremento garantía', summaryLabelX, summaryY);
+                pdf.text(formatCurrency(warrantyInc), pageWidth - 15, summaryY, { align: 'right' });
+            }
+
+            summaryY += 8;
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(0, 0, 0);
+            pdf.text('Total:', summaryLabelX, summaryY);
+            pdf.text(formatCurrency(totalFinal), pageWidth - 15, summaryY, { align: 'right' });
+
+            // Bullet de garantía
+            const bulletTexts = [
+                'Tu joya cuenta con 12 meses de garantía por cambio de color, contados a partir de la fecha de compra.',
+                'La garantía no cubre daños por mal uso, tales como: joyas rotas, rayones, modificaciones o piezas incompletas. En estos casos, la joya pierde automáticamente la garantía.',
+                'En caso de aplicar la garantía, la joya será reemplazada por una nueva, sin opción de reembolso monetario.',
+                'Si recibes tu joya en mal estado, comunícate con nosotros el mismo día o máximo al día siguiente de la entrega para gestionar el cambio con gusto.',
+                'Si no te comunicas con nosotros dentro de este plazo, se entenderá que la joya fue recibida en buen estado y no será posible realizar el cambio.'
+            ];
+
+            let bulletY = summaryY + 12;
+            pdf.setFont("helvetica", "normal");
+            bulletTexts.forEach(text => {
+                const lines = pdf.splitTextToSize(`• ${text}`, pageWidth - 30);
+                pdf.text(lines, 15, bulletY);
+                bulletY += lines.length * 5;
+            });
+
+            return pdf;
+        }
+
         // Función para generar PDF de la factura actual (del modal)
         async function generateCurrentInvoicePDF() {
+            if (!currentInvoiceSale) {
+                await showDialog('Error', 'No hay una venta activa para generar la factura.', 'error');
+                return;
+            }
+
             // Mostrar diálogo de carga
             const loadingDialog = document.createElement('div');
             loadingDialog.className = 'custom-dialog';
@@ -9358,147 +9640,14 @@
                 <div class="dialog-content">
                     <div class="dialog-icon"><i class="fas fa-spinner fa-spin" style="color: var(--gold-primary);"></i></div>
                     <h2 class="dialog-title">Generando PDF</h2>
-                    <p class="dialog-message">Por favor espere mientras se genera el documento con el fondo...</p>
+                    <p class="dialog-message">Estamos preparando tu factura...</p>
                 </div>
             `;
             document.body.appendChild(loadingDialog);
 
             try {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-
-                // Intentar cargar la imagen de fondo
-                try {
-                    const bgData = await getBase64Image('fondo.jpeg');
-                    if (bgData) {
-                        // Agregar imagen de fondo centrada y cubriendo toda la página
-                        pdf.addImage(bgData, 'JPEG', 0, 0, pageWidth, pageHeight);
-                        
-                        // Agregar un rectángulo blanco semitransparente para mejorar legibilidad del texto
-                        // Nota: jsPDF básico no soporta transparencia en rectángulos fácilmente sin plugins, 
-                        // pero podemos intentar simularlo o simplemente usar texto con fondo o sombra si fuera necesario.
-                        // Por ahora, confiamos en que el diseño se vea bien o agregamos un cuadro blanco sutil detrás del contenido principal
-                        pdf.setFillColor(255, 255, 255);
-                        pdf.rect(10, 10, pageWidth - 20, pageHeight - 20, 'F'); 
-                        // OJO: 'F' rellena con blanco sólido tapando el fondo.
-                        // Si queremos transparencia real necesitaríamos gstate. 
-                        // Como solución alternativa efectiva: No ponemos el rect o asumimos que el fondo es decorativo.
-                        // El usuario quiere el FONDO. Así que mejor NO taparlo.
-                        // Voy a deshacer el rect para que se vea la foto.
-                    }
-                } catch (e) {
-                    console.warn('Error cargando fondo:', e);
-                }
-
-                // Obtener datos de la factura actual del modal
-                const invoiceNumber = document.getElementById('invoiceNumber').textContent;
-                const invoiceDate = document.getElementById('invoiceDate').textContent;
-                const customerName = document.getElementById('invoiceCustomerName').textContent;
-                const customerId = document.getElementById('invoiceCustomerId').textContent;
-                const customerPhone = document.getElementById('invoiceCustomerPhone').textContent;
-                const customerAddress = document.getElementById('invoiceCustomerAddress').textContent;
-                const total = document.getElementById('invoiceTotalAmount').textContent; // Asegúrate de tener este ID correcto
-
-                // === CONTENIDO DEL PDF ===
-                // Título
-                pdf.setFontSize(22);
-                pdf.setTextColor(212, 175, 55); // Dorado
-                pdf.setFont("helvetica", "bold");
-                pdf.text('Destello de Oro 18K', pageWidth / 2, 25, { align: 'center' });
-                
-                pdf.setFontSize(10);
-                pdf.setTextColor(0, 0, 0); // Negro para texto
-                pdf.setFont("helvetica", "normal");
-                pdf.text('Sistema de Gestión de Inventario y Ventas', pageWidth / 2, 32, { align: 'center' });
-
-                // Datos de Factura (Cuadro)
-                pdf.setDrawColor(212, 175, 55);
-                pdf.setLineWidth(0.5);
-                pdf.rect(15, 40, pageWidth - 30, 25);
-                
-                pdf.setFontSize(14);
-                pdf.setFont("helvetica", "bold");
-                pdf.text(invoiceNumber || 'Factura', 20, 50);
-                
-                pdf.setFontSize(10);
-                pdf.setFont("helvetica", "normal");
-                pdf.text(invoiceDate || new Date().toLocaleDateString(), 20, 58);
-
-                // Datos del Cliente
-                pdf.setFontSize(12);
-                pdf.setTextColor(212, 175, 55);
-                pdf.setFont("helvetica", "bold");
-                pdf.text('Datos del Cliente:', 20, 75);
-                
-                pdf.setFontSize(10);
-                pdf.setTextColor(0, 0, 0);
-                pdf.setFont("helvetica", "normal");
-                const startY = 82;
-                pdf.text(`Cliente: ${customerName}`, 20, startY);
-                pdf.text(`Cédula: ${customerId}`, 20, startY + 5);
-                pdf.text(`Teléfono: ${customerPhone}`, 20, startY + 10);
-                pdf.text(`Dirección: ${customerAddress}`, 110, startY);
-
-                // Tabla de Productos
-                let yPos = 105;
-                
-                // Encabezados
-                pdf.setFillColor(240, 240, 240); // Gris claro
-                pdf.rect(15, yPos - 5, pageWidth - 30, 8, 'F');
-                pdf.setFont("helvetica", "bold");
-                pdf.text('Producto', 17, yPos);
-                pdf.text('Cant', 100, yPos);
-                pdf.text('Precio Unit', 120, yPos);
-                pdf.text('Subtotal', 160, yPos);
-                
-                yPos += 8;
-                pdf.setFont("helvetica", "normal");
-
-                // Ítems (Necesitamos extraerlos del DOM actual ya que no tenemos el objeto 'sale' aquí directamente)
-                const rows = document.querySelectorAll('#invoiceItemsBody tr');
-                rows.forEach(row => {
-                    const cols = row.querySelectorAll('td');
-                    if (cols.length >= 4) {
-                        const prodName = cols[0].textContent; // Nombre
-                        // const prodId = cols[1].textContent; // ID (Opcional)
-                        const quantity = cols[2].textContent;
-                        const price = cols[3].textContent;
-                        const subtotal = cols[4].textContent;
-
-                        // Truncar nombre si es muy largo
-                        const cleanName = prodName.length > 45 ? prodName.substring(0, 42) + '...' : prodName;
-                        
-                        pdf.text(cleanName, 17, yPos);
-                        pdf.text(quantity, 100, yPos);
-                        pdf.text(price, 120, yPos);
-                        pdf.text(subtotal, 160, yPos);
-                        yPos += 7;
-                    }
-                });
-
-                // Total
-                yPos += 5;
-                pdf.setDrawColor(212, 175, 55);
-                pdf.line(15, yPos, pageWidth - 15, yPos);
-                yPos += 10;
-                
-                pdf.setFontSize(16);
-                pdf.setFont("helvetica", "bold");
-                pdf.setTextColor(212, 175, 55);
-                const totalText = `Total a Pagar: ${document.getElementById('invoiceTotal').textContent}`;
-                pdf.text(totalText, pageWidth - 20, yPos, { align: 'right' });
-
-                // Pie de página
-                pdf.setFontSize(9);
-                pdf.setTextColor(100, 100, 100);
-                pdf.setFont("helvetica", "normal");
-                pdf.text('¡Gracias por su compra!', pageWidth / 2, pageHeight - 20, { align: 'center' });
-                pdf.text('Destello de Oro 18K - Garantía y Calidad', pageWidth / 2, pageHeight - 15, { align: 'center' });
-
-                // Guardar PDF
-                const fileName = `Factura_${invoiceNumber.replace(/[^a-zA-Z0-9]/g, '') || 'Venta'}.pdf`;
+                const pdf = await buildInvoicePDFDocument(currentInvoiceSale);
+                const fileName = `Factura_${String(currentInvoiceSale.id || 'Venta').replace(/[^a-zA-Z0-9_-]/g, '')}.pdf`;
                 pdf.save(fileName);
 
                 document.body.removeChild(loadingDialog);
@@ -9527,79 +9676,7 @@
             document.body.appendChild(loadingDialog);
 
             try {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-
-                // Fondo de pantalla
-                try {
-                    const bgData = await getBase64Image('fondo.jpeg');
-                    if (bgData) {
-                        pdf.addImage(bgData, 'JPEG', 0, 0, pageWidth, pageHeight);
-                    }
-                } catch (e) { console.warn('Sin fondo'); }
-
-                // Título
-                pdf.setFontSize(22);
-                pdf.setTextColor(212, 175, 55);
-                pdf.setFont("helvetica", "bold");
-                pdf.text('Destello de Oro 18K', pageWidth / 2, 25, { align: 'center' });
-                
-                pdf.setFontSize(10);
-                pdf.setTextColor(0, 0, 0);
-                pdf.setFont("helvetica", "normal");
-                pdf.text('Factura de Venta', pageWidth / 2, 32, { align: 'center' });
-
-                // Datos Factura
-                pdf.setDrawColor(212, 175, 55);
-                pdf.rect(15, 40, pageWidth - 30, 20);
-                pdf.setFontSize(12);
-                pdf.setFont("helvetica", "bold");
-                pdf.text(`Factura N°: ${sale.id}`, 20, 50);
-                pdf.setFontSize(10);
-                pdf.setFont("helvetica", "normal");
-                pdf.text(`Fecha: ${formatDate(sale.date)}`, 20, 56);
-                pdf.text(`Método Pago: ${getPaymentMethodName(sale.paymentMethod)}`, 110, 50);
-
-                // Datos Cliente
-                const cName = sale.customerInfo ? sale.customerInfo.name : 'Cliente Mostrador';
-                const cId = sale.customerInfo ? (sale.customerInfo.id || '') : '';
-                const cTel = sale.customerInfo ? (sale.customerInfo.phone || '') : '';
-
-                pdf.text(`Cliente: ${cName}`, 20, 70);
-                if(cId) pdf.text(`CC: ${cId}`, 20, 75);
-                if(cTel) pdf.text(`Tel: ${cTel}`, 110, 75);
-
-                // Productos
-                let y = 85;
-                pdf.setFillColor(240, 240, 240);
-                pdf.rect(15, y-5, pageWidth-30, 8, 'F');
-                pdf.setFont("helvetica", "bold");
-                pdf.text('Producto', 17, y);
-                pdf.text('Cant', 110, y);
-                pdf.text('Total', 160, y);
-                y += 8;
-                
-                pdf.setFont("helvetica", "normal");
-                sale.products.forEach(p => {
-                    const name = p.productName.length > 50 ? p.productName.substring(0,47)+'...' : p.productName;
-                    pdf.text(name, 17, y);
-                    pdf.text(p.quantity.toString(), 110, y);
-                    pdf.text(formatCurrency(p.subtotal), 160, y);
-                    y += 7;
-                });
-
-                // Total
-                y += 5;
-                pdf.setDrawColor(212, 175, 55);
-                pdf.line(15, y, pageWidth-15, y);
-                y += 10;
-                pdf.setFontSize(14);
-                pdf.setFont("helvetica", "bold");
-                pdf.setTextColor(212, 175, 55);
-                pdf.text(`Total: ${formatCurrency(sale.total)}`, pageWidth-20, y, {align:'right'});
-
+                const pdf = await buildInvoicePDFDocument(sale);
                 pdf.save(`Factura_${sale.id}.pdf`);
                 
                 document.body.removeChild(loadingDialog);
@@ -9681,20 +9758,23 @@
 
         // Mostrar factura (SIN REDES SOCIALES)
         function showInvoice(sale) {
-            // Configurar datos de la factura
-            document.getElementById('invoiceNumber').textContent = `Factura ${sale.id}`;
-            document.getElementById('invoiceDate').textContent = `Fecha: ${formatDate(sale.date)}`;
+            currentInvoiceSale = sale;
+
+            // Cabecera y metadatos
+            document.getElementById('invoiceNumber').textContent = sale.id || '---';
+            document.getElementById('invoiceDate').textContent = formatDateLong(sale.date);
             document.getElementById('invoicePaymentMethod').textContent =
-                `Método de Pago: ${getPaymentMethodName(sale.paymentMethod)}`;
+                getPaymentMethodName(sale.paymentMethod || '');
+            document.getElementById('invoiceWarrantyUntil').textContent = calculateWarrantyExpiry(sale.date);
 
             // Información del cliente
             if (sale.customerInfo) {
-                document.getElementById('invoiceCustomerName').textContent = sale.customerInfo.name;
+                document.getElementById('invoiceCustomerName').textContent = sale.customerInfo.name || 'Cliente de mostrador';
                 document.getElementById('invoiceCustomerId').textContent = sale.customerInfo.id || 'No proporcionada';
-                document.getElementById('invoiceCustomerPhone').textContent = sale.customerInfo.phone;
+                document.getElementById('invoiceCustomerPhone').textContent = sale.customerInfo.phone || 'No proporcionado';
                 document.getElementById('invoiceCustomerEmail').textContent = sale.customerInfo.email || 'No proporcionado';
-                document.getElementById('invoiceCustomerAddress').textContent = sale.customerInfo.address;
-                document.getElementById('invoiceCustomerCity').textContent = sale.customerInfo.city;
+                document.getElementById('invoiceCustomerAddress').textContent = sale.customerInfo.address || 'No proporcionada';
+                document.getElementById('invoiceCustomerCity').textContent = sale.customerInfo.city || 'No proporcionada';
             } else {
                 document.getElementById('invoiceCustomerName').textContent = 'Cliente de mostrador';
                 document.getElementById('invoiceCustomerId').textContent = 'No proporcionada';
@@ -9712,7 +9792,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td><strong>${item.productName}</strong></td>
-                    <td>${item.productId}</td>
+                    <td>${item.productId || ''}</td>
                     <td>${item.quantity}</td>
                     <td>${formatCurrency(item.unitPrice)}</td>
                     <td><strong>${formatCurrency(item.subtotal)}</strong></td>
@@ -9720,37 +9800,33 @@
                 invoiceItemsBody.appendChild(row);
             });
 
-            // Agregar filas para descuentos y envío
-            if (sale.discount > 0) {
-                const discountRow = document.createElement('tr');
-                discountRow.innerHTML = `
-                    <td colspan="4" style="text-align: right; color: var(--danger);">Descuento:</td>
-                    <td style="color: var(--danger);">-${formatCurrency(sale.discount)}</td>
-                `;
-                invoiceItemsBody.appendChild(discountRow);
+            // Resumen
+            const subtotal = Number(sale.subtotal) || 0;
+            const deliveryCost = Number(sale.deliveryCost) || 0;
+            const warrantyInc = Number(sale.warrantyIncrement) || 0;
+            const discountValue = Number(sale.discount) || 0;
+            const totalFinal = (typeof sale.total === 'number') ? sale.total : (subtotal + deliveryCost + warrantyInc);
+
+            document.getElementById('invoiceSubtotalValue').textContent = formatCurrency(subtotal);
+            document.getElementById('invoiceDeliveryValue').textContent = formatCurrency(deliveryCost);
+            document.getElementById('invoiceWarrantyValue').textContent = formatCurrency(warrantyInc);
+            document.getElementById('invoiceTotal').textContent = formatCurrency(totalFinal);
+
+            const discountRow = document.getElementById('invoiceDiscountRow');
+            const discountValueEl = document.getElementById('invoiceDiscountValue');
+            if (discountValue > 0) {
+                discountRow.style.display = 'flex';
+                discountValueEl.textContent = `-${formatCurrency(discountValue)}`;
+            } else {
+                discountRow.style.display = 'none';
             }
 
-            if (sale.deliveryCost > 0) {
-                const deliveryRow = document.createElement('tr');
-                deliveryRow.innerHTML = `
-                    <td colspan="4" style="text-align: right; color: var(--info);">Costo de envío:</td>
-                    <td style="color: var(--info);">${formatCurrency(sale.deliveryCost)}</td>
-                `;
-                invoiceItemsBody.appendChild(deliveryRow);
+            const warrantyRow = document.getElementById('invoiceWarrantyRow');
+            if (warrantyInc > 0) {
+                warrantyRow.style.display = 'flex';
+            } else {
+                warrantyRow.style.display = 'none';
             }
-
-            // IMPORTANTE: Agregar incremento por garantía si existe
-            if (sale.warrantyIncrement > 0) {
-                const warrantyRow = document.createElement('tr');
-                warrantyRow.innerHTML = `
-                    <td colspan="4" style="text-align: right; color: var(--warning);">Incremento por garantía:</td>
-                    <td style="color: var(--warning);">${formatCurrency(sale.warrantyIncrement)}</td>
-                `;
-                invoiceItemsBody.appendChild(warrantyRow);
-            }
-
-            // Total
-            document.getElementById('invoiceTotal').textContent = formatCurrency(sale.total);
 
             // Mostrar modal
             document.getElementById('invoiceModal').style.display = 'block';
@@ -10919,6 +10995,38 @@
                 hour: '2-digit',
                 minute: '2-digit'
             });
+        }
+
+        // Formato largo tipo "12 de marzo de 2026"
+        function formatDateLong(dateString) {
+            const date = parseDateStrict(dateString);
+            if (!date) return '---';
+            return date.toLocaleDateString('es-CO', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            }).replace(/\./g, '');
+        }
+
+        // Parse robusto para fechas provenientes del backend o manuales
+        function parseDateStrict(dateString) {
+            if (!dateString) return null;
+            if (dateString.length === 10) {
+                const parts = dateString.split('-');
+                const iso = `${parts[0]}-${parts[1]}-${parts[2]}T00:00:00`;
+                const date = new Date(iso);
+                return isNaN(date.getTime()) ? null : date;
+            }
+            const parsed = new Date(dateString);
+            return isNaN(parsed.getTime()) ? null : parsed;
+        }
+
+        function calculateWarrantyExpiry(dateString) {
+            const base = parseDateStrict(dateString);
+            if (!base) return '---';
+            const expiry = new Date(base);
+            expiry.setFullYear(expiry.getFullYear() + 1);
+            return formatDateLong(expiry.toISOString());
         }
 
         function getPaymentMethodName(method) {
