@@ -41,8 +41,8 @@ try {
     $user = $stmt->fetch();
     
     if (!$user) {
-        // Por seguridad, aveces es mejor decir que se enviÃ³ el correo igual si existe, 
-        // pero el usuario pidiÃ³ "confirmar el correo registrado", asÃ­ que daremos error si no coincide.
+        // Por seguridad, a veces es mejor decir que se envió el correo igual si existe, 
+        // pero el usuario pidió "confirmar el correo registrado", así que daremos error si no coincide.
         echo json_encode(['success' => false, 'message' => 'El correo no coincide con el rol seleccionado.']);
         exit;
     }
@@ -62,27 +62,27 @@ try {
     $mail = new PHPMailer(true);
 
     try {
-        // ConfiguraciÃ³n del servidor SMTP - EL USUARIO DEBE COMPLETAR ESTO
+        // Configuración del servidor SMTP - EL USUARIO DEBE COMPLETAR ESTO
         $mail->isSMTP();
-$mail->Host       = getenv('SMTP_HOST') ?: ($ENV_SMTP_HOST ?? 'smtp.gmail.com'); // Servidor SMTP
-$mail->SMTPAuth   = true;
-$mail->Username   = getenv('SMTP_USER') ?: ($ENV_SMTP_USER ?? '');
-$mail->Password   = getenv('SMTP_PASS') ?: ($ENV_SMTP_PASS ?? ''); // ContraseÃ±a de aplicaciÃ³n
-$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-$mail->Port       = getenv('SMTP_PORT') ?: ($ENV_SMTP_PORT ?? 587);
-$mail->CharSet    = 'UTF-8';
+        $mail->Host       = getenv('SMTP_HOST') ?: ($ENV_SMTP_HOST ?? 'smtp.gmail.com'); // Servidor SMTP
+        $mail->SMTPAuth   = true;
+        $mail->Username   = getenv('SMTP_USER') ?: ($ENV_SMTP_USER ?? '');
+        $mail->Password   = getenv('SMTP_PASS') ?: ($ENV_SMTP_PASS ?? ''); // Contraseña de aplicación
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = getenv('SMTP_PORT') ?: ($ENV_SMTP_PORT ?? 587);
+        $mail->CharSet    = 'UTF-8';
 
         // Emisor y receptor
         // Usa el mismo correo autenticado para que Gmail no lo reemplace como "me"
         $mail->setFrom($mail->Username, 'Destello de Oro 18K');
-        // Responder a un buzÃ³n de la marca (opcional)
+        // Responder a un buzón de la marca (opcional)
         $mail->addReplyTo('no-reply@destellodeoro.com', 'Destello de Oro 18K');
         $mail->addAddress($email, $user['name']);
 
         // Contenido del correo
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
         $host = $_SERVER['HTTP_HOST'];
-        // Ajustar la ruta si el proyecto estÃ¡ en una subcarpeta
+        // Ajustar la ruta si el proyecto está en una subcarpeta
         $base_url = $protocol . "://" . $host . dirname($_SERVER['PHP_SELF'], 2);
         $reset_link = $base_url . "/reset_password.php?token=" . $token;
 
@@ -166,7 +166,7 @@ $mail->CharSet    = 'UTF-8';
         </html>
         HTML;
         $mail->send();
-        echo json_encode(['success' => true, 'message' => 'Se ha enviado un correo con las instrucciones para restablecer tu contraseÃ±a.']);
+        echo json_encode(['success' => true, 'message' => 'Se ha enviado un correo con las instrucciones para restablecer tu contraseña.']);
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => 'El correo no pudo ser enviado. Error: ' . $mail->ErrorInfo]);
     }
@@ -175,4 +175,7 @@ $mail->CharSet    = 'UTF-8';
     echo json_encode(['success' => false, 'message' => 'Error en el servidor: ' . $e->getMessage()]);
 }
 ?>
+
+
+
 
