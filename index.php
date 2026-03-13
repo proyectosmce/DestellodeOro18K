@@ -1063,10 +1063,10 @@
                 font-size: 1rem;
             }
             .enhanced-invoice .invoice-logo-img {
-                max-width: 150px;
+                max-width: 170px;
             }
             .enhanced-invoice .invoice-qr img {
-                max-width: 100px;
+                max-width: 130px;
             }
             .enhanced-invoice .invoice-date-line {
                 font-size: 0.9rem;
@@ -1242,7 +1242,7 @@
             }
             .enhanced-invoice .invoice-qr img {
                 width: 100%;
-                max-width: 160px;
+                max-width: 190px;
                 height: auto;
             }
         }
@@ -1256,7 +1256,7 @@
         }
 
         .enhanced-invoice .invoice-logo-img {
-            max-width: 190px;
+            max-width: 220px;
             height: auto;
         }
 
@@ -1273,7 +1273,7 @@
         }
 
         .enhanced-invoice .invoice-qr img {
-            max-width: 130px;
+            max-width: 150px;
             border: 1px solid #f1f1f1;
             border-radius: 8px;
         }
@@ -9838,8 +9838,8 @@
             }
 
             let y = 12;
-            if (logoData) pdf.addImage(logoData, 'JPEG', 15, y, 30, 22);
-            if (qrData) pdf.addImage(qrData, 'JPEG', pageWidth - 45, y, 30, 30);
+            if (logoData) pdf.addImage(logoData, 'JPEG', 13, y, 36, 26);
+            if (qrData) pdf.addImage(qrData, 'JPEG', pageWidth - 52, y, 36, 36);
 
             pdf.setFontSize(14);
             pdf.setFont("helvetica", "bold");
