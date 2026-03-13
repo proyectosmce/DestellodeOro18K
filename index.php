@@ -1073,6 +1073,7 @@
 
         /* NUEVO: Estilos mejorados para la factura (alineada a factura.jpeg) */
         .invoice-container.enhanced-invoice {
+            position: relative;
             background: #fff;
             border: none;
             font-family: 'Poppins', 'Arial', sans-serif;
@@ -1080,6 +1081,28 @@
             padding: 1.5rem;
             width: 95%;
             margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .invoice-container.enhanced-invoice::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('fondo.jpeg') center/cover no-repeat;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .enhanced-invoice .invoice-branding,
+        .enhanced-invoice .invoice-date-line,
+        .enhanced-invoice .invoice-meta-grid,
+        .enhanced-invoice .invoice-table-wrapper,
+        .enhanced-invoice .summary-box,
+        .enhanced-invoice .warranty-bullets,
+        .enhanced-invoice .invoice-actions {
+            position: relative;
+            z-index: 1;
         }
 
         @media (max-width: 768px) {
@@ -1187,40 +1210,53 @@
 
         .enhanced-invoice .invoice-meta-grid {
             display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            grid-template-columns: 1fr;
+            gap: 0.4rem;
+            margin-bottom: 0.8rem;
         }
 
         .enhanced-invoice .info-card {
             background: transparent;
             border: none;
             border-radius: 0;
-            padding: 4px 0;
-        }
-
-        .enhanced-invoice .info-card + .info-card {
-            padding-top: 0;
+            padding: 2px 0;
         }
 
         .enhanced-invoice .info-row {
             display: flex;
-            justify-content: space-between;
-            gap: 0.6rem;
-            font-size: 0.92rem;
-            padding: 4px 0;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.94rem;
+            padding: 2px 0;
             border: none;
         }
 
         .enhanced-invoice .info-label {
-            color: #333;
-            font-weight: 600;
+            color: #222;
+            font-weight: 700;
+        }
+
+        .enhanced-invoice .info-label::after {
+            content: ':';
+            margin-left: 3px;
         }
 
         .enhanced-invoice .info-value {
             color: #000;
             font-weight: 600;
-            text-align: right;
+            text-align: left;
+        }
+
+        .enhanced-invoice .payment-card .info-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            padding: 6px 0;
+        }
+
+        .enhanced-invoice .payment-card .info-label::after {
+            content: '';
         }
 
         .enhanced-invoice .invoice-table-wrapper {
@@ -1240,7 +1276,7 @@
         .enhanced-invoice .product-table thead th {
             background: #f5f5f5;
             color: #111;
-            padding: 9px 10px;
+            padding: 9px 10px 6px 10px;
             text-align: left;
             font-weight: 700;
             font-size: 0.9rem;
@@ -3314,7 +3350,7 @@
                         <span class="info-value" id="invoiceCustomerEmail">No proporcionado</span>
                     </div>
                 </div>
-                <div class="info-card">
+                <div class="info-card payment-card">
                     <div class="info-row">
                         <span class="info-label">Forma de pago:</span>
                         <span class="info-value" id="invoicePaymentMethod">Efectivo</span>
@@ -3466,6 +3502,7 @@
         let currentMovementTypeForEdit = '';
         let currentHistoryDetailType = ''; // Nueva variable para rastrear vista activa
         let currentInvoiceSale = null; // Venta mostrada en el modal de factura
+        let historySalesCache = []; // Cache para abrir factura desde historial
 
         // Métodos de pago
         const paymentMethods = {
@@ -5244,6 +5281,9 @@
 
             // Ordenar por fecha (más reciente primero)
             data.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || b.createdAt));
+            if (type === 'sales') {
+                historySalesCache = data;
+            }
 
             // Configurar encabezados según el tipo
             let headers = '';
@@ -5452,6 +5492,9 @@
                                     </td>
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 5px;">
+                                            <button class="btn btn-primary btn-sm" onclick="openInvoiceFromHistory('${item.id}')" title="Factura">
+                                                <i class="fas fa-file-invoice"></i> Factura
+                                            </button>
                                             <button class="btn btn-info btn-sm" onclick="viewMovementDetails('${item.id}', 'sales')" title="Ver detalles">
                                                 <i class="fas fa-eye"></i>
                                             </button>
@@ -9504,6 +9547,25 @@
             });
         }
 
+        // Cargar imagen y devolverla con opacidad reducida (para fondos)
+        async function getFadedImage(url, opacity = 0.08) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.globalAlpha = Math.min(Math.max(opacity, 0), 1);
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/jpeg', 0.8));
+                };
+                img.onerror = () => resolve(null);
+                img.src = url;
+            });
+        }
+
         // Cargar imagen y teñirla con gradiente (útil para QR)
         async function getTintedImage(url, gradient = ['#F58529', '#DD2A7B']) {
             return new Promise((resolve) => {
@@ -9585,9 +9647,15 @@
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
 
             const logoData = await getBase64Image('imagenoriginal.jpeg');
             const qrData = await getTintedImage('qrinstagram.jpeg') || await getBase64Image('qrinstagram.jpeg');
+            const bgData = await getFadedImage('fondo.jpeg', 0.08);
+
+            if (bgData) {
+                pdf.addImage(bgData, 'JPEG', 0, 0, pageWidth, pageHeight, '', 'FAST');
+            }
 
             let y = 12;
             if (logoData) pdf.addImage(logoData, 'JPEG', 15, y, 30, 22);
@@ -9618,65 +9686,50 @@
             pdf.setFont("helvetica", "bold");
             pdf.text(purchaseDate, 15, y);
 
-            // Meta derecha
-            let metaY = y - 6;
-            const metaLabelX = pageWidth - 70;
-            const metaValueX = pageWidth - 15;
+            // Meta derecha (etiqueta arriba, valor debajo)
+            let metaY = y + 2;
+            const metaX = pageWidth - 15;
             pdf.setFontSize(10);
             pdf.setFont("helvetica", "normal");
-            pdf.text('Forma de pago:', metaLabelX, metaY);
+            pdf.text('Forma de pago:', metaX, metaY, { align: 'right' });
+            metaY += 5;
             pdf.setFont("helvetica", "bold");
-            pdf.text(paymentMethod, metaValueX, metaY, { align: 'right' });
+            pdf.text(paymentMethod, metaX, metaY, { align: 'right' });
 
-            metaY += 6;
+            metaY += 7;
             pdf.setFont("helvetica", "normal");
-            pdf.text('N.º de factura:', metaLabelX, metaY);
+            pdf.text('N.º de factura:', metaX, metaY, { align: 'right' });
+            metaY += 5;
             pdf.setFont("helvetica", "bold");
-            pdf.text(String(sale.id || ''), metaValueX, metaY, { align: 'right' });
+            pdf.text(String(sale.id || ''), metaX, metaY, { align: 'right' });
 
-            metaY += 6;
+            metaY += 7;
             pdf.setFont("helvetica", "normal");
-            pdf.text('Garantía válida hasta:', metaLabelX, metaY);
+            pdf.text('Garantía válida hasta:', metaX, metaY, { align: 'right' });
+            metaY += 5;
             pdf.setFont("helvetica", "bold");
-            pdf.text(warrantyUntil, metaValueX, metaY, { align: 'right' });
+            pdf.text(warrantyUntil, metaX, metaY, { align: 'right' });
 
-            // Datos cliente izquierda
-            let infoY = y + 2;
+            // Datos cliente compactos en línea
+            let infoY = y + 14;
             pdf.setFontSize(10);
             pdf.setFont("helvetica", "normal");
-            pdf.text('Nombre completo:', 15, infoY);
-            pdf.setFont("helvetica", "bold");
-            pdf.text(cName, 60, infoY);
+            pdf.text(`Nombre completo: ${cName}`, 15, infoY);
 
             infoY += 6;
-            pdf.setFont("helvetica", "normal");
-            pdf.text('Cédula de ciudadanía:', 15, infoY);
-            pdf.setFont("helvetica", "bold");
-            if (cId) pdf.text(cId, 60, infoY);
+            pdf.text(`Cédula de ciudadanía: ${cId || ''}`, 15, infoY);
 
             infoY += 6;
-            pdf.setFont("helvetica", "normal");
-            pdf.text('Número de celular:', 15, infoY);
-            pdf.setFont("helvetica", "bold");
-            if (cPhone) pdf.text(cPhone, 60, infoY);
+            pdf.text(`Número de celular: ${cPhone || ''}`, 15, infoY);
 
             infoY += 6;
-            pdf.setFont("helvetica", "normal");
-            pdf.text('Dirección:', 15, infoY);
-            pdf.setFont("helvetica", "bold");
-            if (cAddress) pdf.text(cAddress, 60, infoY);
+            pdf.text(`Dirección: ${cAddress || ''}`, 15, infoY);
 
             infoY += 6;
-            pdf.setFont("helvetica", "normal");
-            pdf.text('Ciudad/Departamento:', 15, infoY);
-            pdf.setFont("helvetica", "bold");
-            if (cCity) pdf.text(cCity, 60, infoY);
+            pdf.text(`Ciudad/Departamento: ${cCity || ''}`, 15, infoY);
 
             infoY += 6;
-            pdf.setFont("helvetica", "normal");
-            pdf.text('Correo electrónico:', 15, infoY);
-            pdf.setFont("helvetica", "bold");
-            if (cEmail) pdf.text(cEmail, 60, infoY);
+            pdf.text(`Correo electrónico: ${cEmail || ''}`, 15, infoY);
 
             let tableStartY = Math.max(infoY, metaY) + 10;
 
@@ -9900,6 +9953,24 @@
             }
         }
 
+        function openInvoiceFromHistory(id) {
+            const matchId = String(id);
+            const sale = (historySalesCache || []).find(s =>
+                String(s.id) === matchId || String(s.invoice_number || '') === matchId
+            );
+            if (!sale) {
+                showDialog('Factura no disponible', 'No encontramos la venta en el historial para generar la factura.', 'error');
+                return;
+            }
+            showInvoice({
+                ...sale,
+                products: sale.products || sale.items || [],
+                customerInfo: sale.customerInfo || sale.customer_info || {}
+            });
+            const modal = document.getElementById('invoiceModal');
+            if (modal) modal.scrollTop = 0;
+        }
+
         // Mostrar factura (SIN REDES SOCIALES)
         function showInvoice(sale) {
             currentInvoiceSale = sale;
@@ -9908,7 +9979,7 @@
 
             // Cabecera y metadatos
             document.getElementById('invoiceNumber').textContent = sale.id || '---';
-            document.getElementById('invoiceDate').textContent = formatDateLong(sale.date);
+            document.getElementById('invoiceDate').textContent = formatDateLong(sale.date || sale.createdAt || sale.created_at);
             document.getElementById('invoicePaymentMethod').textContent =
                 getPaymentMethodName(sale.paymentMethod || '');
             document.getElementById('invoiceWarrantyUntil').textContent = calculateWarrantyExpiry(sale.date);
@@ -9934,24 +10005,25 @@
             const invoiceItemsBody = document.getElementById('invoiceItemsBody');
             invoiceItemsBody.innerHTML = '';
 
-            sale.products.forEach(item => {
+            const products = sale.products || sale.items || [];
+            products.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td><strong>${item.productName}</strong></td>
-                    <td>${item.productId || ''}</td>
-                    <td>${item.quantity}</td>
-                    <td>${formatCurrency(item.unitPrice)}</td>
-                    <td><strong>${formatCurrency(item.subtotal)}</strong></td>
+                    <td><strong>${item.productName || item.name || 'Producto'}</strong></td>
+                    <td>${item.productId || item.product_ref || item.id || ''}</td>
+                    <td>${item.quantity || 0}</td>
+                    <td>${formatCurrency(item.unitPrice || item.unit_price || 0)}</td>
+                    <td><strong>${formatCurrency(item.subtotal || (item.unitPrice || item.unit_price || 0) * (item.quantity || 0))}</strong></td>
                 `;
                 invoiceItemsBody.appendChild(row);
             });
 
             // Resumen
-            const subtotal = Number(sale.subtotal) || 0;
-            const deliveryCost = Number(sale.deliveryCost) || 0;
-            const warrantyInc = Number(sale.warrantyIncrement) || 0;
-            const discountValue = Number(sale.discount) || 0;
-            const totalFinal = (typeof sale.total === 'number') ? sale.total : (subtotal + deliveryCost + warrantyInc);
+            const subtotal = (sale.subtotal != null) ? Number(sale.subtotal) : products.reduce((acc, item) => acc + (Number(item.subtotal) || Number(item.unitPrice) * Number(item.quantity) || 0), 0);
+            const deliveryCost = Number(sale.deliveryCost ?? sale.delivery_cost ?? 0);
+            const warrantyInc = Number(sale.warrantyIncrement ?? sale.warranty_increment ?? 0);
+            const discountValue = Number(sale.discount ?? 0);
+            const totalFinal = (typeof sale.total === 'number') ? sale.total : (subtotal + deliveryCost + warrantyInc - discountValue);
 
             document.getElementById('invoiceSubtotalValue').textContent = formatCurrency(subtotal);
             document.getElementById('invoiceDeliveryValue').textContent = formatCurrency(deliveryCost);
