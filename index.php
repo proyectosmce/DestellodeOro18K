@@ -1091,7 +1091,7 @@
                 text-align: center;
             }
             .enhanced-invoice .invoice-qr {
-                justify-content: center;
+                align-items: center;
             }
         }
 
@@ -1110,7 +1110,17 @@
 
         .enhanced-invoice .invoice-qr {
             display: flex;
-            justify-content: flex-end;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 6px;
+        }
+
+        .enhanced-invoice .qr-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
         }
 
         .enhanced-invoice .invoice-qr img {
@@ -1134,16 +1144,6 @@
             color: #333;
             line-height: 1.3;
             text-align: center;
-        }
-
-        .enhanced-invoice .brand-links {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            margin-top: 6px;
-            font-size: 0.86rem;
-            color: #222;
         }
 
         .enhanced-invoice .www-badge {
@@ -3240,12 +3240,12 @@
                     <div class="brand-name">DESTELLO DE ORO 18K</div>
                     <div class="brand-owner">LUISA FERNANDA CASTRO</div>
                     <div class="brand-nit">Nit: 1007854646-9</div>
-                    <div class="brand-links">
+                </div>
+                <div class="invoice-qr">
+                    <div class="qr-meta">
                         <span class="www-badge">www</span>
                         <span class="brand-domain">destellodeoro18k.com</span>
                     </div>
-                </div>
-                <div class="invoice-qr">
                     <img src="qrinstagram.jpeg" alt="Instagram Destello de Oro 18K">
                 </div>
             </div>
@@ -9510,7 +9510,7 @@
             pdf.setFont("helvetica", "normal");
             pdf.text('LUISA FERNANDA CASTRO', pageWidth / 2, y + 14, { align: 'center' });
             pdf.text('Nit: 1007854646-9', pageWidth / 2, y + 20, { align: 'center' });
-            pdf.text('destellodeoro18k.com   @destellodeoro18k', pageWidth / 2, y + 26, { align: 'center' });
+            pdf.text('destellodeoro18k.com', pageWidth / 2, y + 26, { align: 'center' });
 
             y += 38;
 
