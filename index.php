@@ -9495,9 +9495,32 @@
                     canvas.height = img.height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
-                    ctx.globalCompositeOperation = 'source-atop';
-                    ctx.fillStyle = color;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    // Parse target color
+                    const hex = color.replace('#', '');
+                    const rT = parseInt(hex.substring(0, 2), 16);
+                    const gT = parseInt(hex.substring(2, 4), 16);
+                    const bT = parseInt(hex.substring(4, 6), 16);
+                    for (let i = 0; i < data.length; i += 4) {
+                        const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
+                        if (a === 0) continue;
+                        // Luminance to keep only dark modules
+                        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                        if (lum < 200) { // dark => tint
+                            data[i] = rT;
+                            data[i + 1] = gT;
+                            data[i + 2] = bT;
+                            data[i + 3] = a;
+                        } else {
+                            // make white
+                            data[i] = 255;
+                            data[i + 1] = 255;
+                            data[i + 2] = 255;
+                            data[i + 3] = a;
+                        }
+                    }
+                    ctx.putImageData(imageData, 0, 0);
                     resolve(canvas.toDataURL('image/png'));
                 };
                 img.onerror = () => resolve(null);
