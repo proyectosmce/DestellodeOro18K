@@ -1097,7 +1097,7 @@
 
         .enhanced-invoice .invoice-branding {
             display: grid;
-            grid-template-columns: 160px 1fr 150px;
+            grid-template-columns: 170px 1fr 150px;
             gap: 1rem;
             align-items: center;
             margin-bottom: 0.75rem;
@@ -1117,6 +1117,7 @@
             max-width: 130px;
             border: 1px solid #f1f1f1;
             border-radius: 8px;
+            filter: invert(27%) sepia(63%) saturate(4938%) hue-rotate(314deg) brightness(97%) contrast(102%);
         }
 
         .enhanced-invoice .brand-name {
@@ -1124,6 +1125,7 @@
             letter-spacing: 0.4px;
             color: #111;
             font-size: 1.15rem;
+            text-align: center;
         }
 
         .enhanced-invoice .brand-owner,
@@ -1131,15 +1133,35 @@
             font-size: 0.95rem;
             color: #333;
             line-height: 1.3;
+            text-align: center;
         }
 
         .enhanced-invoice .brand-links {
             display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-            font-size: 0.85rem;
-            color: #555;
-            margin-top: 4px;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+            font-size: 0.86rem;
+            color: #222;
+        }
+
+        .enhanced-invoice .www-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px 8px;
+            background: #000;
+            color: #fff;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .enhanced-invoice .brand-domain {
+            font-weight: 600;
         }
 
         .enhanced-invoice .invoice-date-line {
@@ -3219,8 +3241,8 @@
                     <div class="brand-owner">LUISA FERNANDA CASTRO</div>
                     <div class="brand-nit">Nit: 1007854646-9</div>
                     <div class="brand-links">
-                        <span>destellodeoro18k.com</span>
-                        <span>@destellodeoro18k</span>
+                        <span class="www-badge">www</span>
+                        <span class="brand-domain">destellodeoro18k.com</span>
                     </div>
                 </div>
                 <div class="invoice-qr">
@@ -9447,6 +9469,27 @@
             });
         }
 
+        // Cargar imagen y teñirla con un color específico (útil para QR)
+        async function getTintedImage(url, color = '#E1306C') {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    ctx.globalCompositeOperation = 'source-atop';
+                    ctx.fillStyle = color;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = () => resolve(null);
+                img.src = url;
+            });
+        }
+
         // Constructor común del PDF alineado al nuevo diseño de factura
         async function buildInvoicePDFDocument(sale) {
             const { jsPDF } = window.jspdf;
@@ -9454,7 +9497,7 @@
             const pageWidth = pdf.internal.pageSize.getWidth();
 
             const logoData = await getBase64Image('imagenoriginal.jpeg');
-            const qrData = await getBase64Image('qrinstagram.jpeg');
+            const qrData = await getTintedImage('qrinstagram.jpeg', '#E1306C') || await getBase64Image('qrinstagram.jpeg');
 
             let y = 12;
             if (logoData) pdf.addImage(logoData, 'JPEG', 15, y, 30, 22);
