@@ -1098,14 +1098,14 @@
 
         .enhanced-invoice .invoice-branding {
             display: grid;
-            grid-template-columns: 170px 1fr 150px;
+            grid-template-columns: 190px 1fr 150px;
             gap: 1rem;
             align-items: center;
             margin-bottom: 0.5rem;
         }
 
         .enhanced-invoice .invoice-logo-img {
-            max-width: 150px;
+            max-width: 190px;
             height: auto;
         }
 
@@ -9485,7 +9485,7 @@
         }
 
         // Cargar imagen y teñirla con un color específico (útil para QR)
-        async function getTintedImage(url, color = '#E1306C') {
+        async function getTintedImage(url, color = '#E4405F') {
             return new Promise((resolve) => {
                 const img = new Image();
                 img.crossOrigin = 'Anonymous';
@@ -9510,7 +9510,7 @@
             try {
                 const qrImg = document.querySelector('#invoiceModal .invoice-qr img');
                 if (!qrImg) return;
-                const tinted = await getTintedImage('qrinstagram.jpeg', '#E1306C');
+                const tinted = await getTintedImage('qrinstagram.jpeg', '#E4405F');
                 if (tinted) qrImg.src = tinted;
             } catch (e) {
                 console.warn('No se pudo teñir el QR en pantalla', e);
@@ -9524,7 +9524,7 @@
             const pageWidth = pdf.internal.pageSize.getWidth();
 
             const logoData = await getBase64Image('imagenoriginal.jpeg');
-            const qrData = await getTintedImage('qrinstagram.jpeg', '#E1306C') || await getBase64Image('qrinstagram.jpeg');
+            const qrData = await getTintedImage('qrinstagram.jpeg', '#E4405F') || await getBase64Image('qrinstagram.jpeg');
 
             let y = 12;
             if (logoData) pdf.addImage(logoData, 'JPEG', 15, y, 30, 22);
