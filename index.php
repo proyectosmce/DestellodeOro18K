@@ -1205,6 +1205,33 @@
             }
         }
 
+        @media (max-width: 600px) {
+            .enhanced-invoice .invoice-branding {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                text-align: center;
+            }
+            .enhanced-invoice .brand-block {
+                transform: none;
+            }
+            .enhanced-invoice .invoice-qr {
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .enhanced-invoice .qr-meta {
+                align-items: center;
+                text-align: center;
+                transform: none;
+            }
+            .enhanced-invoice .www-badge {
+                margin-bottom: 4px;
+            }
+            .enhanced-invoice .invoice-qr img {
+                max-width: 120px;
+            }
+        }
+
         .enhanced-invoice .invoice-branding {
             display: grid;
             grid-template-columns: 190px 1fr 150px;
