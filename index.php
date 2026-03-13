@@ -1074,7 +1074,7 @@
         /* NUEVO: Estilos mejorados para la factura (alineada a factura.jpeg) */
         .invoice-container.enhanced-invoice {
             background: #fff;
-            border: 2px solid #d9d9d9;
+            border: none;
             font-family: 'Poppins', 'Arial', sans-serif;
             max-width: 900px;
             padding: 1.5rem;
@@ -1281,36 +1281,35 @@
             margin-top: 0.4rem;
             margin-left: auto;
             max-width: 340px;
-            background: #fafafa;
-            border: 1px solid #e6e6e6;
-            border-radius: 8px;
-            padding: 10px 12px;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 0;
         }
 
         .enhanced-invoice .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 4px 0;
+            padding: 6px 0;
             font-size: 0.95rem;
         }
 
         .enhanced-invoice .summary-row.total {
             font-weight: 800;
-            font-size: 1.2rem;
-            border-top: 1px solid #ccc;
+            font-size: 1.15rem;
             margin-top: 6px;
             padding-top: 10px;
             color: #000;
         }
 
         .enhanced-invoice .warranty-bullets {
-            background: #f7f7f7;
-            border: 1px solid #e3e3e3;
-            border-radius: 8px;
-            padding: 12px 14px;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 12px 0 0 0;
             line-height: 1.5;
             font-size: 0.9rem;
-            margin-top: 1rem;
+            margin-top: 0.8rem;
         }
 
         .enhanced-invoice .warranty-bullets ul {
@@ -1328,6 +1327,13 @@
             justify-content: center;
             margin-top: 1.3rem;
             flex-wrap: wrap;
+        }
+
+        @media print {
+            .invoice-actions,
+            .invoice-actions button {
+                display: none !important;
+            }
         }
 
         .payment-badge {
