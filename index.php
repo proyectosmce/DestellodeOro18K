@@ -1240,7 +1240,7 @@
 
         .enhanced-invoice .info-label {
             color: #222;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         .enhanced-invoice .info-label::after {
@@ -1250,7 +1250,7 @@
 
         .enhanced-invoice .info-value {
             color: #000;
-            font-weight: 600;
+            font-weight: 500;
             text-align: left;
         }
 
