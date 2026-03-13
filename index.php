@@ -1092,6 +1092,7 @@
             }
             .enhanced-invoice .invoice-qr {
                 align-items: center;
+                justify-content: center;
             }
         }
 
@@ -1110,10 +1111,9 @@
 
         .enhanced-invoice .invoice-qr {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 6px;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
         }
 
         .enhanced-invoice .qr-meta {
@@ -1121,13 +1121,13 @@
             flex-direction: column;
             align-items: flex-end;
             gap: 4px;
+            text-align: right;
         }
 
         .enhanced-invoice .invoice-qr img {
             max-width: 130px;
             border: 1px solid #f1f1f1;
             border-radius: 8px;
-            filter: invert(27%) sepia(63%) saturate(4938%) hue-rotate(314deg) brightness(97%) contrast(102%);
         }
 
         .enhanced-invoice .brand-name {
@@ -9490,6 +9490,18 @@
             });
         }
 
+        // Aplicar tinte tipo Instagram al QR en pantalla
+        async function tintInvoiceQr() {
+            try {
+                const qrImg = document.querySelector('#invoiceModal .invoice-qr img');
+                if (!qrImg) return;
+                const tinted = await getTintedImage('qrinstagram.jpeg', '#E1306C');
+                if (tinted) qrImg.src = tinted;
+            } catch (e) {
+                console.warn('No se pudo teñir el QR en pantalla', e);
+            }
+        }
+
         // Constructor común del PDF alineado al nuevo diseño de factura
         async function buildInvoicePDFDocument(sale) {
             const { jsPDF } = window.jspdf;
@@ -9802,6 +9814,8 @@
         // Mostrar factura (SIN REDES SOCIALES)
         function showInvoice(sale) {
             currentInvoiceSale = sale;
+
+            tintInvoiceQr();
 
             // Cabecera y metadatos
             document.getElementById('invoiceNumber').textContent = sale.id || '---';
