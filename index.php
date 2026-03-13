@@ -955,7 +955,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
-            min-width: 600px;
+            min-width: 320px;
         }
 
         .data-table thead {
@@ -996,6 +996,92 @@
             .data-table td {
                 padding: 0.6rem 0.8rem;
                 font-size: 0.8rem;
+            }
+        }
+
+        /* Responsive tweaks global */
+        @media (max-width: 768px) {
+            .table-header,
+            .history-details-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .table-header h3 {
+                margin-bottom: 4px;
+            }
+            .table-header .search-box,
+            .history-details-header .search-box {
+                width: 100%;
+            }
+            .table-header .search-box input,
+            .history-details-header .search-box input {
+                width: 100%;
+                min-width: 0;
+            }
+            .table-header button,
+            .history-details-header button,
+            .table-header .btn,
+            .history-details-header .btn {
+                width: 100%;
+            }
+            .invoice-container.enhanced-invoice {
+                padding: 1rem;
+            }
+            .enhanced-invoice .invoice-branding {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .enhanced-invoice .invoice-qr {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .data-table th,
+            .data-table td {
+                padding: 0.5rem 0.55rem;
+                font-size: 0.78rem;
+            }
+            .table-header,
+            .history-details-header {
+                gap: 6px;
+            }
+            .table-header .search-box input,
+            .history-details-header .search-box input {
+                font-size: 0.85rem;
+                padding: 8px 10px;
+            }
+            .enhanced-invoice .brand-name {
+                font-size: 1rem;
+            }
+            .enhanced-invoice .invoice-logo-img {
+                max-width: 150px;
+            }
+            .enhanced-invoice .invoice-qr img {
+                max-width: 100px;
+            }
+            .enhanced-invoice .invoice-date-line {
+                font-size: 0.9rem;
+            }
+            .enhanced-invoice .invoice-table-wrapper {
+                overflow-x: auto;
+            }
+            .enhanced-invoice .product-table {
+                font-size: 0.85rem;
+                border-spacing: 0 4px;
+            }
+            .enhanced-invoice .product-table thead th {
+                font-size: 0.85rem;
+            }
+            .enhanced-invoice .summary-row {
+                font-size: 0.9rem;
+            }
+            .enhanced-invoice .summary-row.total {
+                font-size: 1.05rem;
+            }
+            .history-cards-container {
+                grid-template-columns: 1fr !important;
             }
         }
 
