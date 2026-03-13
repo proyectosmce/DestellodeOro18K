@@ -1170,7 +1170,8 @@
             padding: 1.5rem;
             width: 95%;
             margin: 0 auto;
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: visible;
         }
 
         .invoice-container.enhanced-invoice::before {
@@ -1387,7 +1388,8 @@
 
         .enhanced-invoice .invoice-table-wrapper {
             position: relative;
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: visible;
         }
 
         .enhanced-invoice .product-table {
