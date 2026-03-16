@@ -1444,7 +1444,7 @@
             border: none;
             border-radius: 0;
             padding: 12px 0 0 0;
-            line-height: 1.5;
+            line-height: 1.4;
             font-size: 0.9rem;
             margin-top: 0.8rem;
         }
@@ -1455,7 +1455,7 @@
         }
 
         .enhanced-invoice .warranty-bullets li {
-            margin-bottom: 6px;
+            margin-bottom: 3px;
         }
 
         .enhanced-invoice .invoice-actions {
@@ -1478,12 +1478,12 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: #128C7E;
+            color: #E4CE8C;
             font-weight: 700;
         }
 
         .enhanced-invoice .invoice-footer i {
-            color: #25D366;
+            color: #E4CE8C;
         }
 
         @media print {
@@ -9991,18 +9991,18 @@
                 'Si no te comunicas con nosotros dentro de este plazo, se entenderá que la joya fue recibida en buen estado y no será posible realizar el cambio.'
             ];
 
-            let bulletY = summaryY + 12;
+            let bulletY = summaryY + 10;
             pdf.setFont("helvetica", "normal");
             bulletTexts.forEach(text => {
                 const lines = pdf.splitTextToSize(`• ${text}`, pageWidth - 30);
                 pdf.text(lines, 15, bulletY);
-                bulletY += lines.length * 5;
+                bulletY += lines.length * 4.3;
             });
 
             // Footer contact
             bulletY += 8;
             pdf.setFont("helvetica", "bold");
-            pdf.setTextColor(18, 140, 126);
+            pdf.setTextColor(228, 206, 140);
             pdf.text(`WhatsApp: ${whatsappNumber}`, pageWidth / 2, bulletY, { align: 'center' });
             bulletY += 6;
             pdf.setTextColor(0, 0, 0);
