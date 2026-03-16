@@ -1444,8 +1444,8 @@
             border: none;
             border-radius: 0;
             padding: 12px 0 0 0;
-            line-height: 1.4;
-            font-size: 0.9rem;
+            line-height: 1.25;
+            font-size: 0.82rem;
             margin-top: 0.8rem;
         }
 
@@ -1455,7 +1455,7 @@
         }
 
         .enhanced-invoice .warranty-bullets li {
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .enhanced-invoice .invoice-actions {
@@ -1482,8 +1482,9 @@
             font-weight: 700;
         }
 
+        .enhanced-invoice .invoice-footer .whatsapp *,
         .enhanced-invoice .invoice-footer i {
-            color: #E4CE8C;
+            color: #E4CE8C !important;
         }
 
         @media print {
@@ -9991,16 +9992,18 @@
                 'Si no te comunicas con nosotros dentro de este plazo, se entenderá que la joya fue recibida en buen estado y no será posible realizar el cambio.'
             ];
 
-            let bulletY = summaryY + 10;
+            let bulletY = summaryY + 9;
             pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(9);
             bulletTexts.forEach(text => {
                 const lines = pdf.splitTextToSize(`• ${text}`, pageWidth - 30);
                 pdf.text(lines, 15, bulletY);
-                bulletY += lines.length * 4.3;
+                bulletY += lines.length * 3.8;
             });
 
             // Footer contact
             bulletY += 8;
+            pdf.setFontSize(10);
             pdf.setFont("helvetica", "bold");
             pdf.setTextColor(228, 206, 140);
             pdf.text(`WhatsApp: ${whatsappNumber}`, pageWidth / 2, bulletY, { align: 'center' });
@@ -10171,6 +10174,12 @@
             tintInvoiceQr();
 
             document.getElementById('invoiceWhatsapp').textContent = '+57 318 268 7488';
+            const whatsappColor = '#E4CE8C';
+            const whatsappBlock = document.querySelector('#invoiceModal .invoice-footer .whatsapp');
+            if (whatsappBlock) {
+                whatsappBlock.style.color = whatsappColor;
+                whatsappBlock.querySelectorAll('*').forEach(el => el.style.color = whatsappColor);
+            }
             // Cabecera y metadatos
             document.getElementById('invoiceNumber').textContent = sale.id || '---';
             document.getElementById('invoiceDate').textContent = formatDateLong(sale.date || sale.createdAt || sale.created_at);
